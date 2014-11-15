@@ -32,7 +32,7 @@ sendManifest = function _sendManifest(res) {
   var manifest = JSON.parse(cachedManifest)
 
   manifest.message = 'The version updates every second'
-  manifest.version = '1.0.' + (Date.now()/1000)
+  manifest.version = '1.0.' + Math.round(Date.now()/1000)
 
   manifest = JSON.stringify(manifest)
 
