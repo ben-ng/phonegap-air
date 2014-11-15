@@ -123,7 +123,7 @@
     NSURLSession *session = [NSURLSession sharedSession];
     
     NSURL *rootURL = [NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKeyPath:@"rootURL"]];
-    NSURLSessionTask *versionTask = [session dataTaskWithURL:[NSURL URLWithString:@"version.json" relativeToURL:rootURL]
+    NSURLSessionTask *versionTask = [session dataTaskWithURL:[NSURL URLWithString:ManifestPath relativeToURL:rootURL]
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                 
                                                 if(error != nil) {

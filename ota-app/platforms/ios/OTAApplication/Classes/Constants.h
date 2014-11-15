@@ -9,3 +9,4 @@
 FOUNDATION_EXPORT NSString *const ProductionURL;
 FOUNDATION_EXPORT NSString *const StagingURL;
 FOUNDATION_EXPORT NSString *const CustomURL;
+FOUNDATION_EXPORT NSString *const ManifestPath;
