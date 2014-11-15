@@ -20,20 +20,28 @@ Put your web app in the App Store and update it whenever you want.
 
 Included is a working Xcode project and sample node.js server.
 
-1. Run the Xcode project
-2. Shake to switch app versions or download a fresh app
+1. Open the Xcode project
+2. Run it in the iOS simulator (pick any device)
+3. Observe that a blocking update is performed using the production manifest
+4. Select Hardware -> Shake Gesture to open the branch switcher
+5. Select "Staging"
+6. Observe that a blocking update was performed using the staging manifest
 
 ## Usage
 
 * Configure the Xcode project
-  * Hard-code your production and staging URLs
-  * Create and add launch images
-  * Modify the shake gesture handler to restrict access to the dev tools.
+  * Hard-code your production and staging URLs in Constants.m
+  * Create and add your launch images and app icons
+  * Modify the shake gesture handler to restrict access to the dev tools
   * Set your product name and other target preferences
 * Add a manifest to your web server
   * See the sample node.js server for how to do this
 
 ## Documentation
+
+* How do I restrict access to the dev tools?
+
+Implement the global function `window.shouldAllowOTADevTools`. This function should return a boolean indicating if the dev tools should be opened.
 
 * When does the app update?
 
@@ -43,3 +51,39 @@ Included is a working Xcode project and sample node.js server.
 4. When a selection is made in the dev panel
 
 If an update finishes downloading while the app is in the foreground, it will only be applied when the user reopens the app.
+
+## Support
+
+* Bugs
+
+Let me know how to reproduce it and I'll fix it.
+
+* Enhancements
+* Debugging Help
+* Consultation
+
+I'm a full-time student with a near full-time job, so these will be a very low priority for me. If you *really* need something @mention me on [twitter](https://twitter.com/_benng) or email me at `me [at] benng.me` and we'll work something out.
+
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Ben Ng
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
