@@ -35,10 +35,11 @@ sendManifest = function _sendManifest(res) {
   manifest.version = '1.0.' + (Date.now()/1000)
 
   res.writeHead(200, {
-    'content-length': cachedManifest.length
+    'content-length': manifest.length
   , 'content-type': 'application/json'
   })
-  res.end(cachedManifest)
+
+  res.end(manifest)
 }
 
 buildManifest = function _buildManifest (req, res, done) {
