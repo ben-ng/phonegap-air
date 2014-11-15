@@ -29,10 +29,12 @@ fs.readFile(appPath, function (err, data) {
 })
 
 sendManifest = function _sendManifest(res) {
-  var manifest = JSON.parse(JSON.stringify(cachedManifest))
+  var manifest = JSON.parse(cachedManifest)
 
   manifest.message = 'The version updates every second'
   manifest.version = '1.0.' + (Date.now()/1000)
+
+  manifest = JSON.stringify(manifest)
 
   res.writeHead(200, {
     'content-length': manifest.length
