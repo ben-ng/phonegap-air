@@ -60,9 +60,21 @@ The app requests a `manifest.json` file from your server with this syntax:
 }
 ```
 
-* files
+**files**
 
 A dictionary of objects. The keys are for your own reference; the update system disregards them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the
+
+**assets**
+
+An array of URLs to prime the app's cache with. The URLs themselves will be hashed, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data.
+
+**message**
+
+A description of this version of the app.
+
+**version**
+
+The version number of the app. Clients will update themselves if this increases.
 
 See `ota-server/server.js` for an example.
 
