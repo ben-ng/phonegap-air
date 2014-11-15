@@ -26,5 +26,10 @@
   "bugs": {
     "url": "https://github.com/ben-ng/phonegap-air/issues"
   },
-  "homepage": "https://github.com/ben-ng/phonegap-air"
+  "homepage": "https://github.com/ben-ng/phonegap-air",
+  "dependencies": {
+    "async": "^0.9.0",
+    "finalhandler": "^0.3.2",
+    "serve-static": "^1.7.1"
+  }
 }
