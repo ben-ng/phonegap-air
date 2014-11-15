@@ -6,3 +6,5 @@ document.addEventListener('deviceReady', function () {
   document.getElementById('loaded').className = ''
   document.getElementById('meta').appendChild(metaInfoNode)
 }, false)
+
+window.shouldAllowOTADevTools = function () { return true }
