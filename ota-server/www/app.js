@@ -1,6 +1,6 @@
 
 document.addEventListener('deviceReady', function () {
-  var metaInfo = 'remote @ ' + new Date
+  var metaInfo = '{{environment}} App'
     , metaInfoNode = document.createTextNode(metaInfo)
   document.getElementById('loading').className = 'hidden'
   document.getElementById('loaded').className = ''
