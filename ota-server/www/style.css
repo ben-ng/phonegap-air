@@ -1,6 +1,5 @@
 body {
   font-family: Helvetica, sans-serif;
-  padding: 50px 10px 10px 10px;
 }
 
 h1, h2 {
@@ -15,6 +14,7 @@ h2 {
 }
 
 p {
+  padding: 10px;
   width: 100%;
   text-align: center;
 }
