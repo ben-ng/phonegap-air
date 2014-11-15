@@ -32,7 +32,7 @@ Included is a working Xcode project and sample node.js server.
 ## Usage
 
 * Configure the Xcode project
-  * Hard-code your production and staging URLs in Constants.m
+  * Hard-code your production and staging URLs in `Constants.m`
   * Create and add your launch images and app icons
   * Modify the shake gesture handler to restrict access to the dev tools
   * Set your product name and other target preferences
@@ -40,6 +40,31 @@ Included is a working Xcode project and sample node.js server.
   * See the sample node.js server for how to do this
 
 ## Documentation
+
+* How does the app know what to update?
+
+The app requests a `manifest.json` file from your server with this syntax:
+
+```json
+{
+  "files":{
+    "app.js": {
+      "checksum":"d8138338a247ec7ec1eb69c40dc554c2",
+      "destination":"app.js",
+      "source":"/app.js"
+    }
+  },
+  "assets":["http://cdn.com/image.jpg"],
+  "message":"A description of this version",
+  "version":"1.0.0"
+}
+```
+
+* files
+
+A dictionary of objects. The keys are for your own reference; the update system disregards them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the
+
+See `ota-server/server.js` for an example.
 
 * How do I restrict access to the dev tools?
 
@@ -59,6 +84,10 @@ If an update finishes downloading while the app is in the foreground, it will on
 * Bugs
 
 Let me know how to reproduce it and I'll fix it.
+
+* Documentation Requests
+
+Let me know what's confusing and I'll add to it.
 
 * Enhancements
 * Debugging Help
