@@ -53,8 +53,8 @@ buildManifest = function _buildManifest (req, res, done) {
           if(err) return next(err)
 
           cachedManifest.files[filename] = {
-            checksum: crypto.createHash('md5').update(new Buffer(data)).digest("hex")
-          , destination: 'filename'
+            checksum: crypto.createHash('md5').update(data).digest("hex")
+          , destination: filename
           , source: '/' + filename
           }
 
