@@ -62,7 +62,7 @@ The app requests a `manifest.json` file from your server with this syntax:
 
 **files**
 
-A dictionary of objects. The keys are for your own reference; the update system disregards them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the
+A dictionary of objects. The keys are for your own reference; the update system disregards them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the file should be downloaded from. The checksum is an md5 hash of the file data (computed with `crypto.createHash('md5').update(buffer).digest('hex')`).
 
 **assets**
 
