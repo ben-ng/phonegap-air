@@ -1,6 +1,6 @@
 
 document.addEventListener('deviceReady', function () {
-  var metaInfo = '{{environment}} App'
+  var metaInfo = '{{environment}} app'
     , metaInfoNode = document.createTextNode(metaInfo)
   document.getElementById('loading').className = 'hidden'
   document.getElementById('loaded').className = ''
