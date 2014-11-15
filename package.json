@@ -1,0 +1,30 @@
+{
+  "name": "phonegap-air",
+  "version": "1.0.0",
+  "description": "Hybrid apps with background updates",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests yet...\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ben-ng/phonegap-air.git"
+  },
+  "keywords": [
+    "phonegap",
+    "ota",
+    "update",
+    "deploy",
+    "over",
+    "the",
+    "air",
+    "hybrid",
+    "ios"
+  ],
+  "author": "Ben Ng <me@benng.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ben-ng/phonegap-air/issues"
+  },
+  "homepage": "https://github.com/ben-ng/phonegap-air"
+}
