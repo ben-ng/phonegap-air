@@ -41,7 +41,7 @@ Included is a working Xcode project and sample node.js server.
 
 ## Documentation
 
-* How does the app know what to update?
+### How does the app know what to update?
 
 The app requests a `manifest.json` file from your server with this syntax:
 
@@ -78,11 +78,11 @@ The version number of the app. Clients will update themselves if this increases.
 
 See `ota-server/server.js` for an example.
 
-* How do I restrict access to the dev tools?
+### How do I restrict access to the dev tools?
 
 Implement the global function `window.shouldAllowOTADevTools`. This function should return a boolean indicating if the dev tools should be opened.
 
-* When does the app update?
+### When does the app update?
 
 1. On initial launch, an update is attempted before the app is started
 2. When the app enters the background (e.g. when the home button is pushed)
