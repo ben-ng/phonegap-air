@@ -1,2 +1,2 @@
-web: node ota-app/server
+web: node ota-server/server
 
