@@ -368,8 +368,7 @@
         
         // If the downloaded file is a js or css file, we need to fix some absolute paths
         if([destString hasSuffix:@".js"] ||[destString hasSuffix:@".css"]
-           || [destString rangeOfString:@"scope/load/js"].location != NSNotFound
-           || [destString rangeOfString:@"scope/load/css"].location != NSNotFound) {
+           || [destString hasSuffix:@"/js"] ||[destString hasSuffix:@"/css"]) {
             NSString __block *fileContents = [NSString stringWithContentsOfFile:obj[@"tempLocation"] encoding:NSUTF8StringEncoding error:&error];
             
             if(error) {
