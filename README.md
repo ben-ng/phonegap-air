@@ -65,7 +65,7 @@ Your server must host a `manifest.json` that lists the files and assets your app
 }
 ```
 
-**files**
+**manifest.files**
 
 A dictionary of objects, each with the following structure:
 
@@ -81,15 +81,15 @@ The keys of dictionary are for your own reference; the update system does not us
 
 Every file that your app needs to function should be declared here. Nonessential external files such as images on an external CDN should be declared as [assets][manifest-assets].
 
-**assets**
+**manifest.assets**
 
 An array of URLs to prime the app's cache with. The content will be associated with the URL, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data.
 
-**message**
+**manifest.message**
 
 A description of this particular version of the app. I recommend using the last commit message.
 
-**version**
+**manifest.version**
 
 The version number of the app, such as `1.0.0`. Clients will update themselves if this increases.
 
