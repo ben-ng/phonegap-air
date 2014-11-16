@@ -105,6 +105,8 @@ Edit `classes/Constants.m` to suit your application. Three endpoint URLs can be 
 
 `ManifestPath` should be relative to the three endpoint URLs. For example, if `ProductionURL` was `http://google.com` and `ManifestPath` was `m.json`, the app would expect to find the manifest at `http://google.com/m.json`.
 
+The `AbsolutePathsToReplace` option is a comma delimited list of prefixes. Static paths like `/assets/logo.png` do not work in PhoneGap apps because they are relative to the root of the device's filesystem, not the `www` folder. The `AbsolutePathsToReplace` option allows you to turn these into relative paths. For example, if `AbsolutePathsToReplace = @"assets,static"`, a path like `/assets/logo.png` will be turned into `assets/logo.png` because it matched the `assets` prefix.
+
 ### Launch Images & App Icons
 
 Consult the [iOS Documentation](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/MobileHIG/IconMatrix.html#//apple_ref/doc/uid/TP40006556-CH27-SW2) for the full list of icon and launch image sizes.
