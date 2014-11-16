@@ -1,7 +1,23 @@
-phonegap-air
+Phonegap Air
 ============
 
 No-compromise web development. Put your web app in the iOS App Store and update it whenever you want. Access native features like the contacts list and camera using PhoneGap APIs. Bridge the uncanny valley of hybrid apps with launch images and pre-caching.
+
+## Contents
+
+1. [Features](#features)
+2. [Demo](#demo)
+3. [The App Manifest](#the-app-manifest)
+4. [Configuring the Xcode project](#configuring-the-xcode-project)
+   1. [Endpoint URLs](#endpoint-urls)
+   2. [Launch Images & App Icons](#launch-images--app-icons)
+   3. [Restrict Dev Tools Access](#restrict-dev-tools-access)
+   4. [Other Preferences](#other-preferences)
+5. [FAQ](#faq)
+   * [Is This Allowed?](#is-this-allowed)
+   * [When Does The App Update?](#when-does-the-app-update)
+6. [Support](#support)
+7. [License](#license)
 
 ## Features
 
@@ -11,7 +27,7 @@ No-compromise web development. Put your web app in the iOS App Store and update 
 * Switch between prod/staging/dev versions of your app by shaking your device
 * Make your app feel faster with cleverly used launch images
 
-### Advanced Features
+** Advanced Features **
 
 * Load images from the web instantly by proxying them to a local cache
 * Deep link into your application (`myapp://do-something`)
@@ -28,17 +44,6 @@ Included is a working Xcode project and sample node.js server.
 4. Select Hardware -> Shake Gesture to open the branch switcher
 5. Select "Staging"
 6. Observe that a blocking update was performed using the staging manifest
-
-## Guide
-
-1. [The App Manifest](#the-app-manifest)
-2. [Configuring the Xcode project](#configuring-the-xcode-project)
-   1. [Endpoint URLs](#endpoint-urls)
-   2. [Launch Images & App Icons](#launch-images--app-icons)
-   3. [Restrict Dev Tools Access](#restrict-dev-tools-access)
-   4. [Other Preferences](#other-preferences)
-3. [FAQ](#faq)
-   * [When Does The App Update?](#when-does-the-app-update)
 
 ### The App Manifest
 
@@ -110,6 +115,10 @@ Implement `function shouldAllowOTADevTools()` as a global function in your appli
 There are other preferences you can set, too numerous to list in this guide. The most important one is the Product Name, which is the name of the app in the
 
 ## FAQ
+
+### Is This Allowed?
+
+Yes, Apple has changed its long-standing policy against this practice and now allows over-the-air updates of hybrid apps *so long as the purpose of the app does not change*. I have successfully gotten two apps using this technology accepted on the first try, explicity stating in my app review notes that over-the-air updates are performed.
 
 ### When Does The App Update?
 
