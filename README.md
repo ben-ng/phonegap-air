@@ -27,7 +27,7 @@ No-compromise web development. Put your web app in the iOS App Store and update 
 * Switch between prod/staging/dev versions of your app by shaking your device
 * Make your app feel faster with cleverly used launch images
 
-** Advanced Features **
+**Advanced Features**
 
 * Load images from the web instantly by proxying them to a local cache
 * Deep link into your application (`myapp://do-something`)
