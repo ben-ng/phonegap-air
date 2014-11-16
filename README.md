@@ -31,28 +31,19 @@ Included is a working Xcode project and sample node.js server.
 
 ## Guide
 
-1. [The App Manifest][manifest]
-2. [Configuring the Xcode project][xcode]
-   1. [Set Endpoint URLs][xcode-endpoints]
-   2. [Launch Images & App Icons][xcode-assets]
-   3. [Restrict Dev Tools Access][xcode-devtools]
-   4. [Other Preferences][xcode-prefs]
-3. [FAQ][faq]
-   * [When Does The App Update?][faq-when-does-the-app-update]
+1. [The App Manifest](#The-App-Manifest)
+2. [Configuring the Xcode project](#Configuring The Xcode Project)
+   1. [Endpoint URLs](Endpoint-URLs)
+   2. [Launch Images & App Icons](Launch-Images-&-App-Icons)
+   3. [Restrict Dev Tools Access](Restrict-Dev-Tools-Access)
+   4. [Other Preferences](Other-Preferences)
+3. [FAQ](faq)
+   * [When Does The App Update?](When-Does-The-App-Update?)
 
-[manifest]:
 ### The App Manifest
 
 Your server must host a `manifest.json` that lists the files and assets your application needs to function.
 
-* [Example][manifest-example]
-* Required Keys
-  * [files][manifest-files]
-  * [assets][manifest-assets]
-  * [message][manifest-message]
-  * [version][manifest-version]
-
-[manifest-example]:
 **example**
 ```json
 {
@@ -69,7 +60,6 @@ Your server must host a `manifest.json` that lists the files and assets your app
 }
 ```
 
-[manifest-files]:
 **files**
 
 A dictionary of objects, each with the following structure:
@@ -86,51 +76,41 @@ The keys of dictionary are for your own reference; the update system does not us
 
 Every file that your app needs to function should be declared here. Nonessential external files such as images on an external CDN should be declared as [assets][manifest-assets].
 
-[manifest-assets]:
 **assets**
 
 An array of URLs to prime the app's cache with. The content will be associated with the URL, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data.
 
-[manifest-message]:
 **message**
 
 A description of this particular version of the app. I recommend using the last commit message.
 
-[manifest-version]:
 **version**
 
 The version number of the app, such as `1.0.0`. Clients will update themselves if this increases.
 
 See `ota-server/server.js` for an example.
 
-[xcode]:
 ## Configuring The Xcode Project
 
-[xcode-endpoints]:
 ### Endpoint URLs
 
 Edit `classes/Constants.m` to suit your application. Three endpoint URLs can be configured. `ProductionURL` is the default endpoint, while `StagingURL` is provided as a shortcut in the dev tools. `CustomURL` is a placeholder for the editable text field in the dev tools.
 
 `ManifestPath` should be relative to the three endpoint URLs. For example, if `ProductionURL` was `http://google.com` and `ManifestPath` was `m.json`, the app would expect to find the manifest at `http://google.com/m.json`.
 
-[xcode-assets]:
 ### Launch Images & App Icons
 
 Consult the [iOS Documentation](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/MobileHIG/IconMatrix.html#//apple_ref/doc/uid/TP40006556-CH27-SW2) for the full list of icon and launch image sizes.
 
-[xcode-devtools]:
 ### Restrict Dev Tools Access
 Implement `function shouldAllowOTADevTools()` as a global function in your application. This synchronous function should return a boolean indicating whether or not the dev tools should be opened.
 
-[xcode-prefs]:
 ### Other Preferences
 
 There are other preferences you can set, too numerous to list in this guide. The most important one is the Product Name, which is the name of the app in the
 
-[faq]:
 ## FAQ
 
-[faq-when-does-the-app-update]:
 ### When Does The App Update?
 
 There are four ways that an update can happen
