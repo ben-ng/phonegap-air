@@ -85,7 +85,7 @@ Every file that your app needs to function should be declared here. Nonessential
 
 **manifest.assets**
 
-An array of URLs to prime the app's cache with. The content will be associated with the URL, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data.
+An array of URLs to prime the app's cache with. The content will be associated with the URL, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data. Assets are not updated over the air to save bandwidth; the resources will be lazily loaded as needed.
 
 **manifest.message**
 
@@ -105,7 +105,7 @@ Edit `classes/Constants.m` to suit your application. Three endpoint URLs can be 
 
 `ManifestPath` should be relative to the three endpoint URLs. For example, if `ProductionURL` was `http://google.com` and `ManifestPath` was `m.json`, the app would expect to find the manifest at `http://google.com/m.json`.
 
-The `AbsolutePathsToReplace` option is a comma delimited list of prefixes. Static paths like `/assets/logo.png` do not work in PhoneGap apps because they are relative to the root of the device's filesystem, not the `www` folder. The `AbsolutePathsToReplace` option allows you to turn these into relative paths. For example, if `AbsolutePathsToReplace = @"assets,static"`, a path like `/assets/logo.png` will be turned into `assets/logo.png` because it matched the `assets` prefix.
+The `AbsolutePathsToReplace` option is a comma delimited list of prefixes. Static paths like `/assets/logo.png` do not work in PhoneGap apps because they are relative to the root of the device's filesystem, not the `www` folder. The `AbsolutePathsToReplace` option allows you to turn these into relative paths. For example, if `AbsolutePathsToReplace = @"assets,static"`, a path like `/assets/logo.png` will be turned into `assets/logo.png` because it matched the `assets` prefix. The application will replace all such paths in JavaScript and CSS files. It uses a simple heuristic to detect such files: any file that ends with `.js` or `.css`, or contains `/js/` or `/css/` in its path will get this treatment.
 
 ### Launch Images & App Icons
 
