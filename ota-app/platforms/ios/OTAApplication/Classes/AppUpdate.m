@@ -124,18 +124,18 @@
     
     NSURL *rootURL = [NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKeyPath:@"rootURL"]];
     NSURLSessionTask *versionTask = [session dataTaskWithURL:[NSURL URLWithString:ManifestPath relativeToURL:rootURL]
-                                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                
-                                                if(error != nil) {
-                                                    completionHandler(nil, error);
-                                                    return;
-                                                }
-                                                
-                                                NSError *err = NULL;
-                                                NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
-                                                
-                                                completionHandler(json, err);
-                                            }];
+                                           completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                               
+                                               if(error != nil) {
+                                                   completionHandler(nil, error);
+                                                   return;
+                                               }
+                                               
+                                               NSError *err = NULL;
+                                               NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
+                                               
+                                               completionHandler(json, err);
+                                           }];
     
     // Wtf, you need to call this to start the request?
     [versionTask resume];
@@ -217,60 +217,62 @@
                         NSURLSessionDownloadTask *task = [_session downloadTaskWithURL:resource];
                         task.taskDescription = [NSString stringWithFormat:@"%@: %@", key, value[@"source"]];
                         [_downloadTasks setObject:[NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                      @"task": task,
-                                                                                                      @"complete": [NSNumber numberWithBool:NO],
-                                                                                                      @"checksum": value[@"checksum"],
-                                                                                                      @"destination": destination,
-                                                                                                      @"tempLocation": [_tempDirURL URLByAppendingPathComponent:value[@"destination"]]
-                                                                                                      }]
-                                               forKey:[NSNumber numberWithInteger:task.taskIdentifier]];
-                    
+                                                                                                  @"task": task,
+                                                                                                  @"complete": [NSNumber numberWithBool:NO],
+                                                                                                  @"checksum": value[@"checksum"],
+                                                                                                  @"destination": destination,
+                                                                                                  @"tempLocation": [_tempDirURL URLByAppendingPathComponent:value[@"destination"]]
+                                                                                                  }]
+                                           forKey:[NSNumber numberWithInteger:task.taskIdentifier]];
+                        
                         NSLog(@"Downloading %@", resource.absoluteString);
                     }
                 }];
                 
                 // Now iterate through app assets and create download tasks
                 // NOTE: Duplicate assets will fry this thing, so GET RID OF THEM!
-                NSMutableArray *assets = [NSMutableArray arrayWithCapacity:[versionInfo[@"assets"] count]];
-                NSMutableArray *assetKeys = [NSMutableArray arrayWithCapacity:[versionInfo[@"assets"] count]];
-                
-                [versionInfo[@"assets"] enumerateObjectsUsingBlock:^(NSString *assetPath, NSUInteger idx, BOOL *stop) {
-                    NSString *assetKey = [_cache cacheKeyForURL:[NSURL URLWithString:assetPath]];
-                    if([assetKeys indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-                        return [obj isEqualToString:assetKey];
-                    }] == NSNotFound) {
-                        [assetKeys addObject:assetKey];
-                        [assets addObject:assetPath];
-                    }
-                }];
-                
-                [assets enumerateObjectsUsingBlock:^(NSString *value, NSUInteger idx, BOOL *stop) {
-                    // Don't bother downloading files that didn't change
-                    NSURL *URLToFetch = [NSURL URLWithString:value];
-                    NSURL *destination = [_cache persistedDataURLForURL:URLToFetch];
-                    NSError *error = nil;
-                    
-                    [NSData dataWithContentsOfURL:destination options:0 error:&error];
-                    
-                    // Download if the file is missing
-                    if(error != nil) {
-                        NSURLSessionDownloadTask *task = [_session downloadTaskWithURL:URLToFetch];
-                        task.taskDescription = [NSString stringWithFormat:@"Asset: %@", value];
-                        
-                        [_downloadTasks setObject:[NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                      @"task": task,
-                                                                                                      @"complete": [NSNumber numberWithBool:NO],
-                                                                                                      @"destination": [_cache OTAUpdatedPersistedDataURLForURL:URLToFetch],
-                                                                                                      @"tempLocation": [_tempDirURL URLByAppendingPathComponent:[[_cache cacheKeyForURL:URLToFetch] stringByAppendingString:@".persist"]]
-                                                                                                      }]
-                                               forKey:[NSNumber numberWithInteger:task.taskIdentifier]];
-                        
-                        // NSLog(@"Asset to be updated: %@", value);
-                    }
-                    else {
-                        // NSLog(@"Asset skipped: %@", value);
-                    }
+                /* Ignore assets for now, they tend to be flaky
+                 NSMutableArray *assets = [NSMutableArray arrayWithCapacity:[versionInfo[@"assets"] count]];
+                 NSMutableArray *assetKeys = [NSMutableArray arrayWithCapacity:[versionInfo[@"assets"] count]];
+                 
+                 [versionInfo[@"assets"] enumerateObjectsUsingBlock:^(NSString *assetPath, NSUInteger idx, BOOL *stop) {
+                 NSString *assetKey = [_cache cacheKeyForURL:[NSURL URLWithString:assetPath]];
+                 if([assetKeys indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+                 return [obj isEqualToString:assetKey];
+                 }] == NSNotFound) {
+                 [assetKeys addObject:assetKey];
+                 [assets addObject:assetPath];
+                 }
                  }];
+                 
+                 [assets enumerateObjectsUsingBlock:^(NSString *value, NSUInteger idx, BOOL *stop) {
+                 // Don't bother downloading files that didn't change
+                 NSURL *URLToFetch = [NSURL URLWithString:value];
+                 NSURL *destination = [_cache persistedDataURLForURL:URLToFetch];
+                 NSError *error = nil;
+                 
+                 [NSData dataWithContentsOfURL:destination options:0 error:&error];
+                 
+                 // Download if the file is missing
+                 if(error != nil) {
+                 NSURLSessionDownloadTask *task = [_session downloadTaskWithURL:URLToFetch];
+                 task.taskDescription = [NSString stringWithFormat:@"Asset: %@", value];
+                 
+                 [_downloadTasks setObject:[NSMutableDictionary dictionaryWithDictionary:@{
+                 @"task": task,
+                 @"complete": [NSNumber numberWithBool:NO],
+                 @"destination": [_cache OTAUpdatedPersistedDataURLForURL:URLToFetch],
+                 @"tempLocation": [_tempDirURL URLByAppendingPathComponent:[[_cache cacheKeyForURL:URLToFetch] stringByAppendingString:@".persist"]]
+                 }]
+                 forKey:[NSNumber numberWithInteger:task.taskIdentifier]];
+                 
+                 // NSLog(@"Asset to be updated: %@", value);
+                 }
+                 else {
+                 // NSLog(@"Asset skipped: %@", value);
+                 }
+                 }];
+                 */
                 
                 // Iterate through download tasks and start them
                 [_downloadTasks enumerateKeysAndObjectsUsingBlock:^(id key, NSDictionary *taskDesc, BOOL *stop) {
@@ -367,9 +369,9 @@
                            error:nil];
         
         // If the downloaded file is a js or css file, we need to fix some absolute paths
-        if([destString hasSuffix:@".js"] ||[destString hasSuffix:@".css"]
-           || [destString hasSuffix:@"/js"] ||[destString hasSuffix:@"/css"]) {
-            NSString __block *fileContents = [NSString stringWithContentsOfFile:obj[@"tempLocation"] encoding:NSUTF8StringEncoding error:&error];
+        if([destString hasSuffix:@".js"] || [destString hasSuffix:@".css"]
+           || [destString containsString:@"/js/"] || [destString containsString:@"/css/"]) {
+            NSString *fileContents = [NSString stringWithContentsOfFile:obj[@"tempLocation"] encoding:NSUTF8StringEncoding error:&error];
             
             if(error) {
                 NSLog(@"Failed to read file %@, ignoring", obj[@"tempLocation"]);
@@ -388,12 +390,16 @@
                     return input;
                 };
                 
-                [[AbsolutePathsToReplace componentsSeparatedByString:@","] enumerateObjectsUsingBlock:^(NSString *prefix, NSUInteger idx, BOOL *stop) {
+                NSArray *prefixes = [AbsolutePathsToReplace componentsSeparatedByString:@","];
+                
+                for(int i=0; i<prefixes.count; i++) {
+                    NSString *prefix = prefixes[i];
+                    
                     // Only fix nonempty prefixes
                     if(prefix.length) {
                         fileContents = fixPrefix(fileContents, prefix);
                     }
-                }];
+                }
                 
                 [fm createFileAtPath:((NSURL *) obj[@"destination"]).path contents:[fileContents dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
             }
@@ -419,7 +425,7 @@
     
     // The update task is complete!
     [self reset];
-
+    
     // Clear the temp directory
     NSString *tempdir = [_tempDirURL path];
     NSError *error = nil;
