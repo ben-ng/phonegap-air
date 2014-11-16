@@ -3,6 +3,8 @@ Phonegap Air
 
 No-compromise web development. Put your web app in the iOS App Store and update it whenever you want. Access native features like the contacts list and camera using PhoneGap APIs. Bridge the uncanny valley of hybrid apps with launch images and pre-caching.
 
+This system has been in the iOS app store for two months with zero crash reports, successfully serving hundreds of background updates. That said, it's still fairly new, so buyer beware. Tests are coming.
+
 ## Contents
 
 1. [Features](#features)
@@ -133,19 +135,17 @@ If an update finishes downloading while the app is in the foreground, it will on
 
 ## Support
 
-* Bugs
+### Bugs
 
 Let me know how to reproduce it and I'll fix it.
 
-* Documentation Requests
+### Documentation Requests
 
 Let me know what's confusing and I'll add to it.
 
-* Enhancements
-* Debugging Help
-* Consultation
+### Enhancements
 
-I'm a full-time student with a near full-time job, so these will be a very low priority for me. If you *really* need something @mention me on [twitter](https://twitter.com/_benng) or email me at `me [at] benng.me` and we'll work something out.
+I'm a full-time student with a near full-time job, so these will be a very low priority for me. If you need something badly @mention me on [twitter](https://twitter.com/_benng) or email me at `me [at] benng.me` and we'll work something out.
 
 ## License
 
