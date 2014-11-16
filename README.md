@@ -1,9 +1,7 @@
 phonegap-air
 ============
 
-Put your web app in the App Store and update it whenever you want.
-
-![Demo App](https://cldup.com/M5ZzPZAiEA-3000x3000.jpeg)
+No-compromise web development. Put your web app in the iOS App Store and update it whenever you want. Access native features like the contacts list and camera using PhoneGap APIs. Bridge the uncanny valley of hybrid apps with launch images and pre-caching.
 
 ## Features
 
@@ -13,12 +11,14 @@ Put your web app in the App Store and update it whenever you want.
 * Switch between prod/staging/dev versions of your app by shaking your device
 * Make your app feel faster with cleverly used launch images
 
-## Advanced Features
+### Advanced Features
 
 * Load images from the web instantly by proxying them to a local cache
-* Deep link into your application
+* Deep link into your application (`myapp://do-something`)
 
 ## Demo
+
+![Demo App](https://cldup.com/M5ZzPZAiEA-3000x3000.jpeg)
 
 Included is a working Xcode project and sample node.js server.
 
@@ -29,22 +29,31 @@ Included is a working Xcode project and sample node.js server.
 5. Select "Staging"
 6. Observe that a blocking update was performed using the staging manifest
 
-## Usage
+## Guide
 
-* Configure the Xcode project
-  * Hard-code your production and staging URLs in `Constants.m`
-  * Create and add your launch images and app icons
-  * Modify the shake gesture handler to restrict access to the dev tools
-  * Set your product name and other target preferences
-* Add a manifest to your web server
-  * See the sample node.js server for how to do this
+1. [The App Manifest][manifest]
+2. [Configuring the Xcode project][xcode]
+   1. [Set Endpoint URLs][xcode-endpoints]
+   2. [Launch Images & App Icons][xcode-assets]
+   3. [Restrict Dev Tools Access][xcode-devtools]
+   4. [Other Preferences][xcode-prefs]
+3. [FAQ][faq]
+   * [When Does The App Update?][faq-when-does-the-app-update]
 
-## Documentation
+[manifest]:
+### The App Manifest
 
-### How does the app know what to update?
+Your server must host a `manifest.json` that lists the files and assets your application needs to function.
 
-The app requests a `manifest.json` file from your server with this syntax:
+* [Example][manifest-example]
+* Required Keys
+  * [files][manifest-files]
+  * [assets][manifest-assets]
+  * [message][manifest-message]
+  * [version][manifest-version]
 
+[manifest-example]:
+**example**
 ```json
 {
   "files":{
@@ -60,29 +69,71 @@ The app requests a `manifest.json` file from your server with this syntax:
 }
 ```
 
+[manifest-files]:
 **files**
 
-A dictionary of objects. The keys are for your own reference; the update system disregards them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the file should be downloaded from. The checksum is an md5 hash of the file data (computed with `crypto.createHash('md5').update(buffer).digest('hex')`).
+A dictionary of objects, each with the following structure:
 
+```json
+{
+  "checksum":"d8138338a247ec7ec1eb69c40dc554c2",
+  "destination":"app.js",
+  "source":"/app.js"
+}
+```
+
+The keys of dictionary are for your own reference; the update system does not use them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the file should be downloaded from. The checksum is an md5 hash of the file data (computed with `crypto.createHash('md5').update(buffer).digest('hex')`).
+
+Every file that your app needs to function should be declared here. Nonessential external files such as images on an external CDN should be declared as [assets][manifest-assets].
+
+[manifest-assets]:
 **assets**
 
-An array of URLs to prime the app's cache with. The URLs themselves will be hashed, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data.
+An array of URLs to prime the app's cache with. The content will be associated with the URL, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data.
 
+[manifest-message]:
 **message**
 
-A description of this version of the app.
+A description of this particular version of the app. I recommend using the last commit message.
 
+[manifest-version]:
 **version**
 
-The version number of the app. Clients will update themselves if this increases.
+The version number of the app, such as `1.0.0`. Clients will update themselves if this increases.
 
 See `ota-server/server.js` for an example.
 
-### How do I restrict access to the dev tools?
+[xcode]:
+## Configuring The Xcode Project
 
-Implement the global function `window.shouldAllowOTADevTools`. This function should return a boolean indicating if the dev tools should be opened.
+[xcode-endpoints]:
+### Endpoint URLs
 
-### When does the app update?
+Edit `classes/Constants.m` to suit your application. Three endpoint URLs can be configured. `ProductionURL` is the default endpoint, while `StagingURL` is provided as a shortcut in the dev tools. `CustomURL` is a placeholder for the editable text field in the dev tools.
+
+`ManifestPath` should be relative to the three endpoint URLs. For example, if `ProductionURL` was `http://google.com` and `ManifestPath` was `m.json`, the app would expect to find the manifest at `http://google.com/m.json`.
+
+[xcode-assets]:
+### Launch Images & App Icons
+
+Consult the [iOS Documentation](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/MobileHIG/IconMatrix.html#//apple_ref/doc/uid/TP40006556-CH27-SW2) for the full list of icon and launch image sizes.
+
+[xcode-devtools]:
+### Restrict Dev Tools Access
+Implement `function shouldAllowOTADevTools()` as a global function in your application. This synchronous function should return a boolean indicating whether or not the dev tools should be opened.
+
+[xcode-prefs]:
+### Other Preferences
+
+There are other preferences you can set, too numerous to list in this guide. The most important one is the Product Name, which is the name of the app in the
+
+[faq]:
+## FAQ
+
+[faq-when-does-the-app-update]:
+### When Does The App Update?
+
+There are four ways that an update can happen
 
 1. On initial launch, an update is attempted before the app is started
 2. When the app enters the background (e.g. when the home button is pushed)
