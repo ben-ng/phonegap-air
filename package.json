@@ -1,6 +1,6 @@
 {
   "name": "phonegap-air",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Hybrid apps with background updates",
   "main": "index.js",
   "scripts": {
