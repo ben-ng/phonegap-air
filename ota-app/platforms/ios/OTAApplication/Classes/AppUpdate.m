@@ -370,7 +370,7 @@
         if([destString hasSuffix:@".js"] ||[destString hasSuffix:@".css"]
            || [destString rangeOfString:@"scope/load/js"].location != NSNotFound
            || [destString rangeOfString:@"scope/load/css"].location != NSNotFound) {
-            NSString *fileContents = [NSString stringWithContentsOfFile:obj[@"tempLocation"] encoding:NSUTF8StringEncoding error:&error];
+            NSString __block *fileContents = [NSString stringWithContentsOfFile:obj[@"tempLocation"] encoding:NSUTF8StringEncoding error:&error];
             
             if(error) {
                 NSLog(@"Failed to read file %@, ignoring", obj[@"tempLocation"]);
@@ -389,8 +389,12 @@
                     return input;
                 };
                 
-                fileContents = fixPrefix(fileContents, @"scope");
-                fileContents = fixPrefix(fileContents, @"static");
+                [[AbsolutePathsToReplace componentsSeparatedByString:@","] enumerateObjectsUsingBlock:^(NSString *prefix, NSUInteger idx, BOOL *stop) {
+                    // Only fix nonempty prefixes
+                    if(prefix.length) {
+                        fileContents = fixPrefix(fileContents, prefix);
+                    }
+                }];
                 
                 [fm createFileAtPath:((NSURL *) obj[@"destination"]).path contents:[fileContents dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
             }
