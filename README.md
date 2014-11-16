@@ -85,11 +85,11 @@ Every file that your app needs to function should be declared here. Nonessential
 
 **manifest.assets**
 
-An array of URLs to prime the app's cache with. The content will be associated with the URL, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data. Assets are not updated over the air to save bandwidth; the resources will be lazily loaded as needed.
+An array of URLs to prime the app's cache with. The content will be associated with the URL, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data. Assets are *not* updated over the air to save bandwidth; the resources will be lazily loaded as needed.
 
 **manifest.message**
 
-A description of this particular version of the app. I recommend using the last commit message.
+A description of this particular version of the app. I recommend using the last commit message, or perhaps a human readable date indicating when the app was built. This is only visible in the dev tools, and helps you keep track of what version you're on.
 
 **manifest.version**
 
@@ -116,7 +116,7 @@ Implement `function shouldAllowOTADevTools()` as a global function in your appli
 
 ### Other Preferences
 
-There are other preferences you can set, too numerous to list in this guide. The most important one is the Product Name, which is the name of the app in the
+There are many other other preferences you can set -- too numerous to list in this guide, and outside the scope of this project anyway. The most important one is probably the Product Name, which is the name of the app as seen on the home screen.
 
 ## FAQ
 
@@ -134,6 +134,16 @@ There are four ways that an update can happen
 4. When a selection is made in the dev panel
 
 If an update finishes downloading while the app is in the foreground, it will only be applied when the user reopens the app.
+
+Just because an update is attempted does not mean that files are actually downloaded. Files are downloaded when:
+
+1. If the endpoint is Production or Staging AND the version has incremented since the last update
+2. If the update was triggered from the dev tools
+3. If the custom endpoint is selected
+
+The custom endpoint will always result in file downloads because they are usually pointed at development machines, where incrementing the version number so often is tedious and unnecessary.
+
+Only files that have changed will be downloaded, and the update will be aborted if any of the checksums do not match.
 
 ## Support
 
