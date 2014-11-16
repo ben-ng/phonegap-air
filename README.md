@@ -31,14 +31,14 @@ Included is a working Xcode project and sample node.js server.
 
 ## Guide
 
-1. [The App Manifest](#The-App-Manifest)
-2. [Configuring the Xcode project](#Configuring The Xcode Project)
-   1. [Endpoint URLs](Endpoint-URLs)
-   2. [Launch Images & App Icons](Launch-Images-&-App-Icons)
-   3. [Restrict Dev Tools Access](Restrict-Dev-Tools-Access)
-   4. [Other Preferences](Other-Preferences)
-3. [FAQ](faq)
-   * [When Does The App Update?](When-Does-The-App-Update?)
+1. [The App Manifest](#the-app-manifest)
+2. [Configuring the Xcode project](#configuring-the-xcode-project)
+   1. [Endpoint URLs](#endpoint-urls)
+   2. [Launch Images & App Icons](#launch-images--app-icons)
+   3. [Restrict Dev Tools Access](#restrict-dev-tools-access)
+   4. [Other Preferences](#other-preferences)
+3. [FAQ](#faq)
+   * [When Does The App Update?](#when-does-the-app-update)
 
 ### The App Manifest
 
