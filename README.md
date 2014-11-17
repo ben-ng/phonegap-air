@@ -9,17 +9,18 @@ This system has been in the iOS app store for two months with zero crash reports
 
 1. [Features](#features)
 2. [Demo](#demo)
-3. [The App Manifest](#the-app-manifest)
-4. [Configuring the Xcode project](#configuring-the-xcode-project)
+3. [Getting Started](#getting-started)
+4. [The App Manifest](#the-app-manifest)
+5. [Configuring the Xcode project](#configuring-the-xcode-project)
    1. [Endpoint URLs](#endpoint-urls)
    2. [Launch Images & App Icons](#launch-images--app-icons)
    3. [Restrict Dev Tools Access](#restrict-dev-tools-access)
    4. [Other Preferences](#other-preferences)
-5. [FAQ](#faq)
+6. [FAQ](#faq)
    * [Is This Allowed?](#is-this-allowed)
    * [When Does The App Update?](#when-does-the-app-update)
-6. [Support](#support)
-7. [License](#license)
+7. [Support](#support)
+8. [License](#license)
 
 ## Features
 
@@ -47,7 +48,11 @@ Included is a working Xcode project and sample node.js server.
 5. Select "Staging"
 6. Observe that a blocking update was performed using the staging manifest
 
-### The App Manifest
+## Getting Started
+
+The Xcode project that is included is not just a demo, it's the starting point for your application. It's a working app that is currently downloading a demo application from [this heroku app](https://prod-ota-demo.herokuapp.com). That means once you've created an [app manifest](#the-app-manifest) and [changed the endpoint URLs](#endpoint-urls) to point to it, the demo will *become* your app. Pretty crazy, huh? You'll have to do some extra work to get your app accepted, such as coming up with app icons and launch images, but with those two steps alone you will have a working app to show off on your device.
+
+## The App Manifest
 
 Your server must host a `manifest.json` that lists the files and assets your application needs to function.
 
