@@ -1,9 +1,9 @@
 Phonegap Air
 ============
 
-No-compromise web development. Put your web app in the iOS App Store and update it whenever you want. Access native features like the contacts list and camera using PhoneGap APIs. Bridge the uncanny valley of hybrid apps with launch images and pre-caching.
+Put your web app in the iOS App Store and update it whenever you want. Access native features like the contacts list and camera using PhoneGap APIs. Bridge the uncanny valley of hybrid apps with launch images and pre-caching.
 
-This system has been in the iOS app store for two months with zero crash reports, successfully serving hundreds of background updates. That said, it's still fairly new, so buyer beware. Tests are coming.
+This system has been in the iOS app store for two months with zero crash reports, successfully serving hundreds, if not thousands, of background updates. That said, it's still fairly new, so buyer beware. Tests are coming.
 
 ## Contents
 
