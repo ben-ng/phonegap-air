@@ -19,6 +19,7 @@ This system has been in the iOS app store for five months with zero crash report
 6. [FAQ](#faq)
    * [Is This Allowed?](#is-this-allowed)
    * [When Does The App Update?](#when-does-the-app-update)
+   * [How Does This Work?](#how-does-this-work)
 7. [Support](#support)
 8. [License](#license)
 
@@ -149,6 +150,10 @@ Just because an update is attempted does not mean that files are actually downlo
 The custom endpoint will always result in file downloads because they are usually pointed at development machines, where incrementing the version number so often is tedious and unnecessary.
 
 Only files that have changed will be downloaded, and the update will be aborted if any of the checksums do not match.
+
+### How Does This Work?
+
+iOS apps do not have permission to write to the app bundle, so PhoneGap Air writes those resources to the Documents directory and does its work there instead.
 
 ## Support
 
