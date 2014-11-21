@@ -1,3 +1,7 @@
+# Ignore application code
+ota-app/www
+ota-app/platforms/ios/www
+
 # Node
 #
 
