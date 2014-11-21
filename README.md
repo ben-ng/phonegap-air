@@ -16,12 +16,13 @@ This system has been in the iOS app store for five months with zero crash report
    2. [Launch Images & App Icons](#launch-images--app-icons)
    3. [Restrict Dev Tools Access](#restrict-dev-tools-access)
    4. [Other Preferences](#other-preferences)
-6. [FAQ](#faq)
+6. [Workflow](#workflow)
+7. [FAQ](#faq)
    * [Is This Allowed?](#is-this-allowed)
    * [When Does The App Update?](#when-does-the-app-update)
    * [How Does This Work?](#how-does-this-work)
-7. [Support](#support)
-8. [License](#license)
+8. [Support](#support)
+9. [License](#license)
 
 ## Features
 
@@ -123,6 +124,12 @@ Implement `function shouldAllowOTADevTools()` as a global function in your appli
 ### Other Preferences
 
 There are many other other preferences you can set -- too numerous to list in this guide, and outside the scope of this project anyway. The most important one is probably the Product Name, which is the name of the app as seen on the home screen.
+
+## Workflow
+
+Run `phonegap build ios` in the `ota-app` folder. The `before_build` hook will download the files declared in your production manifest and place them in the `ota-app/www` folder. The regular phonegap build process will take over after this.
+
+If you want to deploy the application on your iOS device, run `phonegap run ios` with your device plugged in and `ios-deploy` installed as a global module.
 
 ## FAQ
 
