@@ -136,14 +136,14 @@
     [appUpdate downloadUpdateWithCompletionHandler:^(NSDictionary *versionInfo, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(versionInfo);
-        XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.0."]);
+        XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.1."]);
         
         [appUpdate downloadUpdateWithCompletionHandler:^(NSDictionary *versionInfoTwo, NSError *error) {
             XCTAssertNotNil(error);
             XCTAssertEqual(error.code, 200); // This is the error code for "no update needed"
             
             XCTAssertNotNil(versionInfo);
-            XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.0."]);
+            XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.1."]);
             
             [expectation fulfill];
         }];
@@ -167,12 +167,12 @@
     [appUpdate downloadUpdateWithCompletionHandler:^(NSDictionary *versionInfo, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(versionInfo);
-        XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.0."]);
+        XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.1."]);
         
         [appUpdate downloadUpdateWithCompletionHandler:^(NSDictionary *versionInfoTwo, NSError *error) {
             XCTAssertNil(error);
             XCTAssertNotNil(versionInfo);
-            XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.0."]);
+            XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.1."]);
             
             [expectation fulfill];
         }];
