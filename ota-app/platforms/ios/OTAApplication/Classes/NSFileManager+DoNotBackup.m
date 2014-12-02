@@ -1,6 +1,6 @@
 //
 //  NSFileManager+DoNotBackup.m
-//  Getable
+//  OTAApplication
 //
 //  Created by Ben on 10/7/14.
 //

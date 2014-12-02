@@ -338,8 +338,6 @@
                 alertTitle = @"(Last Update Failed)";
             }
             
-            
-            // Check the webview to see if the user is logged in with a getable email
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Now On %@", currentBranch]
                                                                 message:alertTitle
                                                                delegate:self

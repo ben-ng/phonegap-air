@@ -1,6 +1,6 @@
 //
 //  NSData+MD5.h
-//  Getable
+//  OTAApplication
 //
 //  Created by Ben on 7/15/14.
 //

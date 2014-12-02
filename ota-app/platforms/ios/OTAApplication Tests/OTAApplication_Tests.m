@@ -116,4 +116,8 @@
     }];
 }
 
+/**
+ * Check that we can download a fresh app
+ */
+
 @end

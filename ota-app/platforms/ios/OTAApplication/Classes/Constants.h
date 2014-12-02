@@ -1,6 +1,6 @@
 //
 //  Constants.h
-//  Getable
+//  OTAApplication
 //
 //  Created by Ben on 7/16/14.
 //

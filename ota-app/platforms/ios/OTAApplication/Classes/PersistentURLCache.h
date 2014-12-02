@@ -1,6 +1,6 @@
 //
 //  PersistentURLCache.h
-//  Getable
+//  OTAApplication
 //
 //  Created by Ben on 7/18/14.
 //

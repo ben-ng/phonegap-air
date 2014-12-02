@@ -1,6 +1,6 @@
 //
 //  AppUpdate.m
-//  Getable
+//  OTAApplication
 //
 //  Created by Ben on 7/15/14.
 //
@@ -159,7 +159,7 @@
             
             // Don't run more than one update at a time
             if(_downloadTasks != nil && _downloadTasks.count > 0) {
-                return completionHandler(nil, [NSError errorWithDomain:@"GETABLE"
+                return completionHandler(nil, [NSError errorWithDomain:@"OTAApplication"
                                                                   code:0
                                                               userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"An update task is already running with %lu pending downloads", (unsigned long)_downloadTasks.count]}
                                                ]);
@@ -189,7 +189,7 @@
             if([[defaults stringForKey:@"version"] isEqualToString: versionInfo[@"version"]] && [rootURLString isEqualToString:ProductionURL]) {
                 // Need to restore the version because we wiped it out to nil
                 [defaults setValue:versionInfo[@"version"] forKey:@"version"];
-                return completionHandler(versionInfo, [NSError errorWithDomain:@"GETABLE" code:200 userInfo:@{NSLocalizedDescriptionKey: @"Already on latest version"}]);
+                return completionHandler(versionInfo, [NSError errorWithDomain:@"OTAApplication" code:200 userInfo:@{NSLocalizedDescriptionKey: @"Already on latest version"}]);
             }
             // Otherwise, download the update
             else {
@@ -347,7 +347,7 @@
     // If this flag was set, we should bail out
     if(isCorrupted) {
         [self reset];
-        _proxiedCompletionHandler([NSError errorWithDomain:@"GETABLE" code:500 userInfo:@{
+        _proxiedCompletionHandler([NSError errorWithDomain:@"OTAApplication" code:500 userInfo:@{
                                                                                           NSLocalizedDescriptionKey: @"Download corrupted"
                                                                                           }]);
         return;
@@ -414,7 +414,7 @@
         
         if(error) {
             *stop = YES;
-            lastError = [NSError errorWithDomain:@"GETABLE" code:500 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Error swapping file %@: %@", obj[@"destination"], error.localizedDescription]}];
+            lastError = [NSError errorWithDomain:@"OTAApplication" code:500 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Error swapping file %@: %@", obj[@"destination"], error.localizedDescription]}];
             return;
         }
     }];
@@ -463,7 +463,7 @@
     NSError *_error;
     
     if(error == nil) {
-        _error = [NSError errorWithDomain:@"GETABLE" code:505 userInfo:@{NSLocalizedDescriptionKey: @"The downloads took too long"}];
+        _error = [NSError errorWithDomain:@"OTAApplication" code:505 userInfo:@{NSLocalizedDescriptionKey: @"The downloads took too long"}];
     }
     else {
         _error = error;

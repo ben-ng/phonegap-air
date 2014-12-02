@@ -1,6 +1,6 @@
 //
 //  NSString+MD5.m
-//  Getable
+//  OTAApplication
 //
 //  Created by Ben on 7/18/14.
 //
