@@ -78,7 +78,7 @@ Your server must host a `manifest.json` that lists the files and assets your app
 
 **manifest.files**
 
-A dictionary of objects, each with the following structure:
+A object containing multiple objects, each with the following structure:
 
 ```json
 {
@@ -88,7 +88,7 @@ A dictionary of objects, each with the following structure:
 }
 ```
 
-The keys of dictionary are for your own reference; the update system does not use them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the file should be downloaded from. The checksum is an md5 hash of the file data (computed with `crypto.createHash('md5').update(buffer).digest('hex')`).
+The keys of the `files` object are for your own reference; the update system does not use them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the file should be downloaded from. The checksum is an md5 hash of the file data (computed with `crypto.createHash('md5').update(buffer).digest('hex')`).
 
 Every file that your app needs to function should be declared here. Nonessential external files such as images on an external CDN should be declared as [assets](#manifest-assets).
 
