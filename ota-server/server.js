@@ -31,8 +31,15 @@ fs.readFile(appPath, function (err, data) {
 sendManifest = function _sendManifest(res) {
   var manifest = JSON.parse(cachedManifest)
 
-  manifest.message = 'The version updates every second'
-  manifest.version = '1.0.' + Math.round(Date.now()/1000)
+  manifest.message = 'The version updates every second when not in production'
+
+  // Pin the production version so that we can test the redundant update logic
+  if(process.env.NODE_ENV == 'production') {
+    manifest.version = '1.1.0'
+  }
+  else {
+    manifest.version = '1.1.' + Math.round(Date.now()/1000)
+  }
 
   manifest = JSON.stringify(manifest)
 
