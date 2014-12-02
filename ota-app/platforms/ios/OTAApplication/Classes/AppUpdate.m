@@ -100,6 +100,7 @@
     
     [fm removeItemAtURL:_OTAUpdatedWWWURL error:nil];
     
+    [fm createDirectoryAtURL:[_OTAUpdatedWWWURL URLByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
     [fm copyItemAtURL:_WWWPrimerURL toURL:_OTAUpdatedWWWURL error:&error];
     [fm addSkipBackupAttributeToItemAtURL:_OTAUpdatedWWWURL];
     

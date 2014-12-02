@@ -15,6 +15,14 @@
     NSObject<UIApplicationDelegate> *appDelegate;
     AppUpdate *appUpdate;
     PersistentURLCache *persistentCache;
+    NSFileManager *fm;
+    
+    NSString *basePath;
+    
+    NSURL *OTAUpdatedWWWURL;
+    NSURL *WWWPrimerURL;
+    NSURL *cachePrimerURL;
+    NSURL *OTAUpdatedCacheURL;
 }
 
 @end
@@ -24,39 +32,88 @@
 - (void)setUp {
     [super setUp];
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSError *error;
     
-    NSURL *OTAUpdatedWWWURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/test_ota_updated_www"] isDirectory:YES];
-    NSURL *WWWPrimerURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/test_www_primer"] isDirectory:YES];
-    NSURL *cachePrimerURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/test_cache_primer"] isDirectory:YES];
-    NSURL *OTAUpdatedCacheURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/test_ota_updated_cache"] isDirectory:YES];
+    fm = [NSFileManager defaultManager];
+    
+    NSString *directory = NSHomeDirectory();
+    basePath = [directory stringByAppendingPathComponent:@"UnitTestTemp/"];
+    
+    // Load frequently used URLs up front
+    OTAUpdatedWWWURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/test_ota_updated_www"] isDirectory:YES];
+    WWWPrimerURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/test_www_primer"] isDirectory:YES];
+    cachePrimerURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/test_cache_primer"] isDirectory:YES];
+    OTAUpdatedCacheURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/test_ota_updated_cache"] isDirectory:YES];
     
     appDelegate = [UIApplication sharedApplication].delegate;
+    
+    // Recreate directories
+    
+    // We don't create this one because it is the job of AppUpdate
+    // [fm createDirectoryAtURL:OTAUpdatedWWWURL withIntermediateDirectories:YES attributes:nil error:&error];
+    // XCTAssertNil(error);
+    
+    [fm createDirectoryAtURL:WWWPrimerURL withIntermediateDirectories:YES attributes:nil error:&error];
+    XCTAssertNil(error);
+    [fm createDirectoryAtURL:cachePrimerURL withIntermediateDirectories:YES attributes:nil error:&error];
+    XCTAssertNil(error);
+    [fm createDirectoryAtURL:OTAUpdatedCacheURL withIntermediateDirectories:YES attributes:nil error:&error];
+    XCTAssertNil(error);
     
     persistentCache = [[PersistentURLCache alloc] initWithMemoryCapacity:8 * 1024 * 1024
                                                             diskCapacity:8 * 1024 * 1024
                                                                 diskPath:@"test_persistent_cache"
                                                           cachePrimerURL:cachePrimerURL
                                                       OTAUpdatedCacheURL:OTAUpdatedCacheURL];
-    
-    appUpdate = [[AppUpdate alloc] initWithOTAUpdatedWWWURL:OTAUpdatedWWWURL
-                                               WWWPrimerURL:WWWPrimerURL
-                                             cachePrimerURL:cachePrimerURL
-                                                      cache:persistentCache];
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+    
+    NSError *error;
+    
+    // Empty directories
+    [fm removeItemAtPath:basePath error:&error];
+    XCTAssertNil(error);
 }
 
 /**
- * Check that at launch, the bundle's contents are copied to the OTA updated www folder
+ * Check that at launch, the www primer is copied over to the OTA updated directory
  */
 - (void)testAppPrimer {
+    // Create a file in the WWW primer
+    NSString *testFixtureData = @"test data";
+    NSURL *primerFixtureURL = [WWWPrimerURL URLByAppendingPathComponent:@"index.html"];
+    NSError *error = nil;
     
-    XCTAssert(YES, @"Pass");
+    [testFixtureData writeToURL:[WWWPrimerURL URLByAppendingPathComponent:@"index.html"] atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    XCTAssertNil(error);
+    
+    XCTAssert([[NSString stringWithContentsOfURL:primerFixtureURL
+                                       encoding:NSUTF8StringEncoding
+                                          error:&error] isEqualToString:testFixtureData]);
+    XCTAssertNil(error);
+    
+    appUpdate = [[AppUpdate alloc] initWithOTAUpdatedWWWURL:OTAUpdatedWWWURL
+                                               WWWPrimerURL:WWWPrimerURL
+                                             cachePrimerURL:cachePrimerURL
+                                                      cache:persistentCache];
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Primed"];
+    
+    [appUpdate restoreFromBundleResourcesWithCompletionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+        XCTAssert([testFixtureData isEqualToString:[NSString stringWithContentsOfURL:[OTAUpdatedWWWURL URLByAppendingPathComponent:@"index.html"] encoding:NSUTF8StringEncoding error:&error]]);
+        XCTAssertNil(error);
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        if(error) {
+            XCTFail(@"The test fimed out");
+        }
+    }];
 }
 
 @end
