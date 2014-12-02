@@ -92,7 +92,7 @@ Every file that your app needs to function should be declared here. Nonessential
 
 **manifest.assets**
 
-An array of URLs to prime the app's cache with. The content will be associated with the URL, so if if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data. Assets are *not* updated over the air to save bandwidth; the resources will be lazily loaded as needed.
+An array of URLs to prime the app's cache with. The content will be associated with the URL, so if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data. Assets are *not* updated over the air to save bandwidth; the resources will be lazily loaded as needed.
 
 **manifest.message**
 
@@ -123,7 +123,7 @@ Implement `function shouldAllowOTADevTools()` as a global function in your appli
 
 ### Other Preferences
 
-There are many other other preferences you can set -- too numerous to list in this guide, and outside the scope of this project anyway. The most important one is probably the Product Name, which is the name of the app as seen on the home screen.
+There are many other preferences you can set -- too numerous to list in this guide, and outside the scope of this project anyway. The most important one is probably the Product Name, which is the name of the app as seen on the home screen.
 
 ## Workflow
 
@@ -135,7 +135,7 @@ If you want to deploy the application on your iOS device, run `phonegap run ios`
 
 ### Is This Allowed?
 
-Yes, Apple has changed its long-standing policy against this practice and now allows over-the-air updates of hybrid apps *so long as the purpose of the app does not change*. I have successfully gotten two apps using this technology accepted on the first try, explicity stating in my app review notes that over-the-air updates are performed.
+Yes, Apple has changed its long-standing policy against this practice and now allows over-the-air updates of hybrid apps *so long as the purpose of the app does not change*. I have successfully gotten two apps using this technology accepted on the first try, explicitly stating in my app review notes that over-the-air updates are performed.
 
 ### When Does The App Update?
 
