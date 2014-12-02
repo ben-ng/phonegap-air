@@ -150,13 +150,13 @@ There are four ways that an update can happen
 
 If an update finishes downloading while the app is in the foreground, it will only be applied when the user reopens the app.
 
-Just because an update is attempted does not mean that files are actually downloaded. Files are downloaded when:
+Just because an update is attempted does not mean that files are actually downloaded. Files are downloaded if at least one of the following is true:
 
-1. If the endpoint is Production or Staging AND the version has incremented since the last update
-2. If the update was triggered from the dev tools
-3. If the custom endpoint is selected
+1. If the endpoint is Production AND the version has incremented since the last update
+2. If the endpoint is not Production
+3. If the update was triggered from the dev tools
 
-The custom endpoint will always result in file downloads because they are usually pointed at development machines, where incrementing the version number so often is tedious and unnecessary.
+Endpoints that are not production always result in an update because they are usually pointed at development machines, where incrementing the version number so often is tedious and unnecessary.
 
 Only files that have changed will be downloaded, and the update will be aborted if any of the checksums do not match.
 
