@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
@@ -36,6 +37,9 @@
 		7E7966E51810823500FA85AD /* icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DB1810823500FA85AD /* icon-76@2x.png */; };
 		7E7966E61810823500FA85AD /* icon-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DC1810823500FA85AD /* icon-small.png */; };
 		7E7966E71810823500FA85AD /* icon-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DD1810823500FA85AD /* icon-small@2x.png */; };
+		B54BD5DC1A21B78A00B373B2 /* OTAApplication_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = B54BD5DB1A21B78A00B373B2 /* OTAApplication_Tests.m */; };
+		B54BD5E21A21B7D400B373B2 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
+		B54BD5E31A21B7F800B373B2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 305D5FD0115AB8F900A74A75 /* MobileCoreServices.framework */; };
 		B5E1C5621A17A14F0022777F /* AppUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = B5E1C5571A17A14F0022777F /* AppUpdate.m */; };
 		B5E1C5631A17A14F0022777F /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = B5E1C5591A17A14F0022777F /* Constants.m */; };
 		B5E1C5641A17A14F0022777F /* NSData+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = B5E1C55B1A17A14F0022777F /* NSData+MD5.m */; };
@@ -59,6 +63,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = D2AAC07D0554694100DB518D;
 			remoteInfo = CordovaLib;
+		};
+		B54BD5DD1A21B78A00B373B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D6058900D05DD3D006BFB54;
+			remoteInfo = OTAApplication;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -101,6 +112,9 @@
 		7E7966DC1810823500FA85AD /* icon-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-small.png"; sourceTree = "<group>"; };
 		7E7966DD1810823500FA85AD /* icon-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-small@2x.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* OTAApplication-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "OTAApplication-Info.plist"; path = "../OTAApplication-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		B54BD5D71A21B78A00B373B2 /* OTAApplication Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OTAApplication Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B54BD5DA1A21B78A00B373B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B54BD5DB1A21B78A00B373B2 /* OTAApplication_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTAApplication_Tests.m; sourceTree = "<group>"; };
 		B5E1C5561A17A14F0022777F /* AppUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUpdate.h; sourceTree = "<group>"; };
 		B5E1C5571A17A14F0022777F /* AppUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUpdate.m; sourceTree = "<group>"; };
 		B5E1C5581A17A14F0022777F /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -128,6 +142,15 @@
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				305D5FD1115AB8F900A74A75 /* MobileCoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B54BD5D41A21B78A00B373B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B54BD5E31A21B7F800B373B2 /* MobileCoreServices.framework in Frameworks */,
+				B54BD5E21A21B7D400B373B2 /* AssetsLibrary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* OTAApplication.app */,
+				B54BD5D71A21B78A00B373B2 /* OTAApplication Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -194,6 +218,7 @@
 				307C750510C5A3420062BCA9 /* Plugins */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				B54BD5D81A21B78A00B373B2 /* OTAApplication Tests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -302,6 +327,23 @@
 			path = se.lproj;
 			sourceTree = "<group>";
 		};
+		B54BD5D81A21B78A00B373B2 /* OTAApplication Tests */ = {
+			isa = PBXGroup;
+			children = (
+				B54BD5DB1A21B78A00B373B2 /* OTAApplication_Tests.m */,
+				B54BD5D91A21B78A00B373B2 /* Supporting Files */,
+			);
+			path = "OTAApplication Tests";
+			sourceTree = "<group>";
+		};
+		B54BD5D91A21B78A00B373B2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B54BD5DA1A21B78A00B373B2 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		EB87FDF11871DA420020F90C /* Staging */ = {
 			isa = PBXGroup;
 			children = (
@@ -333,6 +375,24 @@
 			productReference = 1D6058910D05DD3D006BFB54 /* OTAApplication.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B54BD5D61A21B78A00B373B2 /* OTAApplication Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B54BD5E11A21B78A00B373B2 /* Build configuration list for PBXNativeTarget "OTAApplication Tests" */;
+			buildPhases = (
+				B54BD5D31A21B78A00B373B2 /* Sources */,
+				B54BD5D41A21B78A00B373B2 /* Frameworks */,
+				B54BD5D51A21B78A00B373B2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B54BD5DE1A21B78A00B373B2 /* PBXTargetDependency */,
+			);
+			name = "OTAApplication Tests";
+			productName = "OTAApplication Tests";
+			productReference = B54BD5D71A21B78A00B373B2 /* OTAApplication Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -340,6 +400,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 510;
+				TargetAttributes = {
+					B54BD5D61A21B78A00B373B2 = {
+						CreatedOnToolsVersion = 6.1;
+						TestTargetID = 1D6058900D05DD3D006BFB54;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OTAApplication" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -366,6 +432,7 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* OTAApplication */,
+				B54BD5D61A21B78A00B373B2 /* OTAApplication Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -412,6 +479,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B54BD5D51A21B78A00B373B2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -449,6 +523,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B54BD5D31A21B78A00B373B2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B54BD5DC1A21B78A00B373B2 /* OTAApplication_Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -456,6 +538,11 @@
 			isa = PBXTargetDependency;
 			name = CordovaLib;
 			targetProxy = 301BF550109A68C00062928A /* PBXContainerItemProxy */;
+		};
+		B54BD5DE1A21B78A00B373B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D6058900D05DD3D006BFB54 /* OTAApplication */;
+			targetProxy = B54BD5DD1A21B78A00B373B2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -505,6 +592,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OTAApplication/OTAApplication-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "OTAApplication/OTAApplication-Info.plist";
@@ -536,6 +624,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OTAApplication/OTAApplication-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "OTAApplication/OTAApplication-Info.plist";
@@ -556,6 +645,75 @@
 				);
 				PRODUCT_NAME = OTAApplication;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B54BD5DF1A21B78A00B373B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "OTAApplication Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OTAApplication.app/OTAApplication";
+			};
+			name = Debug;
+		};
+		B54BD5E01A21B78A00B373B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "OTAApplication Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OTAApplication.app/OTAApplication";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -658,6 +816,15 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B54BD5E11A21B78A00B373B2 /* Build configuration list for PBXNativeTarget "OTAApplication Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B54BD5DF1A21B78A00B373B2 /* Debug */,
+				B54BD5E01A21B78A00B373B2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
