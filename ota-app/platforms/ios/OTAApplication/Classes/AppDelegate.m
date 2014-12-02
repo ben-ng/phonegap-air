@@ -99,7 +99,8 @@
     _appUpdate = [[AppUpdate alloc] initWithOTAUpdatedWWWURL:[self OTAUpdatedWWWURL]
                                                 WWWPrimerURL:[self WWWPrimerURL]
                                               cachePrimerURL:[self cachePrimerURL]
-                                                       cache:sharedCache];
+                                                       cache:sharedCache
+                                                userDefaults:[NSUserDefaults standardUserDefaults]];
     
     /**
      * Read the URL Scheme from the plist file

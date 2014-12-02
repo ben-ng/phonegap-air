@@ -15,7 +15,8 @@
 - (id) initWithOTAUpdatedWWWURL: (NSURL *) OTAUpdatedWWWURL
                    WWWPrimerURL: (NSURL *) WWWPrimerURL
                  cachePrimerURL: (NSURL *) cachePrimerURL
-                          cache: (PersistentURLCache *) cache;
+                          cache: (PersistentURLCache *) cache
+                   userDefaults: (NSUserDefaults *) userDefaults;
 
 // Gets the latest version information
 - (void) getLatestVersionWithCompletionHandler: (void (^)(NSDictionary *versionInfo, NSError *error))completionHandler;

@@ -23,6 +23,7 @@
 @implementation AppUpdate {
     int _sessionCounter;
     
+    NSUserDefaults *defaults;
     NSString *_cachePrimerPath;
     NSURL *_cachePrimerURL;
     NSURL *_WWWPrimerURL;
@@ -38,7 +39,7 @@
 
 - (id)init
 {
-    self = [self initWithOTAUpdatedWWWURL:nil WWWPrimerURL:nil cachePrimerURL:nil cache:nil];
+    self = [self initWithOTAUpdatedWWWURL:nil WWWPrimerURL:nil cachePrimerURL:nil cache:nil userDefaults:nil];
     _sessionCounter = 0;
     return self;
 }
@@ -47,6 +48,7 @@
                   WWWPrimerURL:(NSURL *)WWWPrimerURL
                 cachePrimerURL:(NSURL *)cachePrimerURL
                          cache:(PersistentURLCache *)cache
+                  userDefaults:(NSUserDefaults *)userDefaults
 {
     self = [super init];
     
@@ -76,10 +78,10 @@
         _tempDirURL = [NSURL fileURLWithPath:[basePath stringByAppendingString:@"/temp"] isDirectory:YES];
         
         // Set up the rootURL if needed
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        defaults = userDefaults;
         
-        if([defaults valueForKey:@"rootURL"] == nil) {
-            [defaults setValue:ProductionURL forKey:@"rootURL"];
+        if([defaults objectForKey:@"rootURL"] == nil) {
+            [defaults setObject:ProductionURL forKey:@"rootURL"];
         }
     }
     
@@ -168,9 +170,8 @@
                 [self reset];
             }
             
-            NSString *rootURLString = [[NSUserDefaults standardUserDefaults] valueForKeyPath:@"rootURL"];
+            NSString *rootURLString = [defaults objectForKey:@"rootURL"];
             NSURL *rootURL = [NSURL URLWithString:rootURLString];
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
             _session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:[NSOperationQueue mainQueue]];
             
@@ -188,7 +189,7 @@
             // If the version is the same, and we are in prod mode, don't update
             if([[defaults stringForKey:@"version"] isEqualToString: versionInfo[@"version"]] && [rootURLString isEqualToString:ProductionURL]) {
                 // Need to restore the version because we wiped it out to nil
-                [defaults setValue:versionInfo[@"version"] forKey:@"version"];
+                [defaults setObject:versionInfo[@"version"] forKey:@"version"];
                 return completionHandler(versionInfo, [NSError errorWithDomain:@"OTAApplication" code:200 userInfo:@{NSLocalizedDescriptionKey: @"Already on latest version"}]);
             }
             // Otherwise, download the update
@@ -303,7 +304,7 @@
     
     if(_downloadTasks.count == 0) {
         // Still set version even if no changes
-        [[NSUserDefaults standardUserDefaults] setValue:_targetVersion forKey:@"version"];
+        [defaults setObject:_targetVersion forKey:@"version"];
         [self reset];
         _proxiedCompletionHandler(nil);
         return;
@@ -421,7 +422,7 @@
     
     // Update the current version of the app so we don't waste time re-downloading stuff
     if(lastError == nil) {
-        [[NSUserDefaults standardUserDefaults] setValue:_targetVersion forKey:@"version"];
+        [defaults setObject:_targetVersion forKey:@"version"];
     }
     
     // The update task is complete!

@@ -8,14 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "Constants.h"
 #import "AppUpdate.h"
 #import "PersistentURLCache.h"
 
 @interface OTAApplication_Tests : XCTestCase {
     NSObject<UIApplicationDelegate> *appDelegate;
+    
     AppUpdate *appUpdate;
     PersistentURLCache *persistentCache;
+    
     NSFileManager *fm;
+    NSUserDefaults *defaults;
     
     NSString *basePath;
     
@@ -34,6 +38,7 @@
     
     NSError *error;
     
+    defaults = [[NSUserDefaults alloc] init];
     fm = [NSFileManager defaultManager];
     
     NSString *directory = NSHomeDirectory();
@@ -60,11 +65,21 @@
     [fm createDirectoryAtURL:OTAUpdatedCacheURL withIntermediateDirectories:YES attributes:nil error:&error];
     XCTAssertNil(error);
     
+    // Wipe out defaults
+    [defaults setObject:@"0.0.0" forKey:@"version"];
+    [defaults setObject:ProductionURL forKey:@"rootURL"];
+    
     persistentCache = [[PersistentURLCache alloc] initWithMemoryCapacity:8 * 1024 * 1024
                                                             diskCapacity:8 * 1024 * 1024
                                                                 diskPath:@"test_persistent_cache"
                                                           cachePrimerURL:cachePrimerURL
                                                       OTAUpdatedCacheURL:OTAUpdatedCacheURL];
+    
+    appUpdate = [[AppUpdate alloc] initWithOTAUpdatedWWWURL:OTAUpdatedWWWURL
+                                               WWWPrimerURL:WWWPrimerURL
+                                             cachePrimerURL:cachePrimerURL
+                                                      cache:persistentCache
+                                               userDefaults:defaults];
 }
 
 - (void)tearDown {
@@ -82,6 +97,9 @@
  * Check that at launch, the www primer is copied over to the OTA updated directory
  */
 - (void)testAppPrimer {
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Primed"];
+    
     // Create a file in the WWW primer
     NSString *testFixtureData = @"test data";
     NSURL *primerFixtureURL = [WWWPrimerURL URLByAppendingPathComponent:@"index.html"];
@@ -94,13 +112,6 @@
                                        encoding:NSUTF8StringEncoding
                                           error:&error] isEqualToString:testFixtureData]);
     XCTAssertNil(error);
-    
-    appUpdate = [[AppUpdate alloc] initWithOTAUpdatedWWWURL:OTAUpdatedWWWURL
-                                               WWWPrimerURL:WWWPrimerURL
-                                             cachePrimerURL:cachePrimerURL
-                                                      cache:persistentCache];
-    
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Primed"];
     
     [appUpdate restoreFromBundleResourcesWithCompletionHandler:^(NSError *error) {
         XCTAssertNil(error);
@@ -117,7 +128,61 @@
 }
 
 /**
- * Check that we can download a fresh app
+ * Check that we can download a fresh app, and that we know when not to download a new version
  */
+- (void)testProductionDownload {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Downloaded"];
+    
+    [appUpdate downloadUpdateWithCompletionHandler:^(NSDictionary *versionInfo, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(versionInfo);
+        XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.0."]);
+        
+        [appUpdate downloadUpdateWithCompletionHandler:^(NSDictionary *versionInfoTwo, NSError *error) {
+            XCTAssertNotNil(error);
+            XCTAssertEqual(error.code, 200); // This is the error code for "no update needed"
+            
+            XCTAssertNotNil(versionInfo);
+            XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.0."]);
+            
+            [expectation fulfill];
+        }];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        if(error) {
+            XCTFail(@"The test fimed out");
+        }
+    }];
+}
+
+/**
+ * Check that we can download a fresh app, and always download a new version
+ */
+- (void)testDevelopmentDownload {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Downloaded"];
+    
+    [defaults setObject:StagingURL forKey:@"rootURL"];
+    
+    [appUpdate downloadUpdateWithCompletionHandler:^(NSDictionary *versionInfo, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(versionInfo);
+        XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.0."]);
+        
+        [appUpdate downloadUpdateWithCompletionHandler:^(NSDictionary *versionInfoTwo, NSError *error) {
+            XCTAssertNil(error);
+            XCTAssertNotNil(versionInfo);
+            XCTAssert([(NSString *)[versionInfo objectForKey:@"version"] hasPrefix:@"1.0."]);
+            
+            [expectation fulfill];
+        }];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        if(error) {
+            XCTFail(@"The test fimed out");
+        }
+    }];
+}
 
 @end
