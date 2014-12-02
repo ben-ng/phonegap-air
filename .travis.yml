@@ -1,0 +1,5 @@
+language: objective-c
+xcode_project: ota-app/platforms/ios/OTAApplication.xcodeproj
+xcode_scheme: OTAApplication
+xcode_sdk: iphonesimulator8.0
+
