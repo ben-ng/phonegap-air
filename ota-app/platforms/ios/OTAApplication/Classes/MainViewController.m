@@ -275,7 +275,7 @@
 
 -(void)reloadWebView
 {
-    NSString *indexHTMLData = [NSString stringWithContentsOfURL:[_OTAUpdatedWWWURL URLByAppendingPathComponent:@"index.html"] encoding:NSUTF8StringEncoding error:nil];
+    NSString *indexHTMLData = [NSString stringWithContentsOfURL:[_OTAUpdatedWWWURL URLByAppendingPathComponent:self.startPage] encoding:NSUTF8StringEncoding error:nil];
     CGSize viewSize = [UIScreen mainScreen].bounds.size;
     
     // Replace timestamp so we force new js to load
@@ -544,7 +544,7 @@
     }
     
     // Did the user request index.html? In which case, redirect them to use the OTA updated one instead of the bundled one
-    if([request.URL.absoluteString containsString:@"index.html"]) {
+    if([request.URL.absoluteString containsString:self.startPage]) {
         [self performSelector:@selector(reloadWebView) withObject:nil afterDelay:0.1];
         return NO;
     }
