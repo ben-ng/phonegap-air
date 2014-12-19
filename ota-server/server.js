@@ -7,15 +7,26 @@ var finalhandler = require('finalhandler')
   , http = require('http')
   , path = require('path')
   , fs = require('fs')
-  , async = require('async')
-  , crypto = require('crypto')
   , wwwDir = path.join(__dirname, 'www')
+  , stratosphere = require('stratosphere')
   , appPath = path.join(wwwDir, 'app.js')
+  , port = process.env.PORT || 8080
+  , instance
   , serve = serveStatic(wwwDir)
   , server
-  , buildManifest
-  , sendManifest
-  , cachedManifest
+  , manifestOpts = {}
+
+
+manifestOpts.message = 'The version updates every second when not in production'
+
+// Pin the production version so that we can test the redundant update logic
+if(process.env.NODE_ENV == 'production') {
+  manifestOpts.version = '1.1.0'
+}
+else {
+  manifestOpts.version = '1.1.' + Math.round(Date.now()/1000)
+}
+
 
 // Replace app.js placeholder so the apps know where they pulled from
 fs.readFile(appPath, function (err, data) {
@@ -28,73 +39,18 @@ fs.readFile(appPath, function (err, data) {
   })
 })
 
-sendManifest = function _sendManifest(res) {
-  var manifest = JSON.parse(cachedManifest)
-
-  manifest.message = 'The version updates every second when not in production'
-
-  // Pin the production version so that we can test the redundant update logic
-  if(process.env.NODE_ENV == 'production') {
-    manifest.version = '1.1.0'
-  }
-  else {
-    manifest.version = '1.1.' + Math.round(Date.now()/1000)
-  }
-
-  manifest = JSON.stringify(manifest)
-
-  res.writeHead(200, {
-    'content-length': manifest.length
-  , 'content-type': 'application/json'
-  })
-
-  res.end(manifest)
-}
-
-buildManifest = function _buildManifest (req, res, done) {
-  if(cachedManifest) {
-    sendManifest(res)
-  }
-  else {
-    fs.readdir(wwwDir, function (err, files) {
-      if(err) return done(err)
-
-      cachedManifest = {files: {}, assets: []}
-
-      async.map(files, function (filename, next) {
-        var filepath = path.join(wwwDir, filename)
-
-        fs.readFile(filepath, function (err, data) {
-          if(err) return next(err)
-
-          cachedManifest.files[filename] = {
-            checksum: crypto.createHash('md5').update(data).digest('hex')
-          , destination: filename
-          , source: '/' + filename
-          }
-
-          next()
-        })
-      }, function (err) {
-        if(err) return done(err)
-
-        cachedManifest = JSON.stringify(cachedManifest)
-
-        sendManifest(res)
-      })
-    })
-  }
-}
-
 server = http.createServer(function(req, res) {
-  var done = finalhandler(req, res)
-
-  if(require('url').parse(req.url).pathname == '/manifest.json') {
-    buildManifest(req, res, done)
-  }
-  else {
-    serve(req, res, done)
-  }
+  serve(req, res, finalhandler(req, res))
 })
 
-server.listen(process.env.PORT || 8080)
+instance = stratosphere(server, {
+  assets: path.join(__dirname, 'assets.json')
+, root: path.join(__dirname, 'tmp')
+, manifestOpts: manifestOpts
+})
+
+instance.intercept().listen(port)
+
+instance.preload(function () {
+  console.log('preloading complete, listening on ' + port)
+})
