@@ -43,6 +43,7 @@ server = http.createServer(function(req, res) {
   serve(req, res, finalhandler(req, res))
 })
 
+// Full Stratosphere documentation: https://github.com/ben-ng/stratosphere
 instance = stratosphere(server, {
   assets: path.join(__dirname, 'assets.json')
 , root: path.join(__dirname, 'tmp')

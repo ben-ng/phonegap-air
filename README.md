@@ -58,7 +58,7 @@ The Xcode project that is included is not just a demo, it's the starting point f
 
 ## The App Manifest
 
-Your server must host a `manifest.json` that lists the files and assets your application needs to function.
+Your server must host a `manifest.json` that lists the files and assets your application needs to function. You can use the [Stratosphere](https://github.com/ben-ng/stratosphere) module to simplify this. Take a look at `ota-server/server.js` for a small example.
 
 **example**
 ```json
