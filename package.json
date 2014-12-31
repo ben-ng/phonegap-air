@@ -1,6 +1,6 @@
 {
   "name": "phonegap-air",
-  "version": "1.0.12",
+  "version": "1.1.0",
   "description": "Put your web app in the iOS App Store and update it whenever you want",
   "main": "index.js",
   "scripts": {
