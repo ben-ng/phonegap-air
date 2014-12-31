@@ -149,7 +149,7 @@
         }];
     }];
     
-    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:100.0 handler:^(NSError *error) {
         if(error) {
             XCTFail(@"The test fimed out");
         }
@@ -178,7 +178,7 @@
         }];
     }];
     
-    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:100.0 handler:^(NSError *error) {
         if(error) {
             XCTFail(@"The test fimed out");
         }
