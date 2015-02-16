@@ -58,7 +58,7 @@ The Xcode project that is included is not just a demo, it's the starting point f
 
 ## The App Manifest
 
-Your server must host a `manifest.json` that lists the files and assets your application needs to function. You can use the [Stratosphere](https://github.com/ben-ng/stratosphere) module to simplify this. Take a look at `ota-server/server.js` for a small example.
+Your server must host a `manifest.json` that lists the files your application needs to function. You can use the [Stratosphere](https://github.com/ben-ng/stratosphere) module to simplify this. Take a look at `ota-server/server.js` for a small example.
 
 **example**
 ```json
@@ -70,7 +70,6 @@ Your server must host a `manifest.json` that lists the files and assets your app
       "source":"/app.js"
     }
   },
-  "assets":["http://cdn.com/image.jpg"],
   "message":"A description of this version",
   "version":"1.0.0"
 }
@@ -90,11 +89,7 @@ A object containing multiple objects, each with the following structure:
 
 The keys of the `files` object are for your own reference; the update system does not use them. `destination` refers to where in the `www` folder this file should be placed. `source` should be a path relative to your web server's root indicating where the file should be downloaded from. The checksum is an md5 hash of the file data (computed with `crypto.createHash('md5').update(buffer).digest('hex')`).
 
-Every file that your app needs to function should be declared here. Nonessential external files such as images on an external CDN should be declared as [assets](#manifest-assets).
-
-**manifest.assets**
-
-An array of URLs to prime the app's cache with. The content will be associated with the URL, so if you wish to change the content, you must provide a unique URL or existing clients will continue using the old data. Assets are *not* updated over the air to save bandwidth; the resources will be lazily loaded as needed.
+Every file that your app needs to function should be declared here.
 
 **manifest.message**
 
