@@ -372,7 +372,7 @@
         
         // If the downloaded file is a js or css file, we need to fix some absolute paths
         if([destString hasSuffix:@".js"] || [destString hasSuffix:@".css"]
-           || [destString containsString:@"/js/"] || [destString containsString:@"/css/"]) {
+           || [destString rangeOfString:@"/js/"].location != NSNotFound || [destString rangeOfString:@"/css/"].location != NSNotFound) {
             NSString *fileContents = [NSString stringWithContentsOfFile:obj[@"tempLocation"] encoding:NSUTF8StringEncoding error:&error];
             
             if(error) {

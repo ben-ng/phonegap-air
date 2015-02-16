@@ -314,7 +314,7 @@
     if(!_isUpdating && motion == UIEventSubtypeMotionShake && !self.webView.isLoading) {
         NSString *shouldAllow = [self.webView stringByEvaluatingJavaScriptFromString:@"window.shouldAllowOTADevTools()"];
         
-        if([shouldAllow containsString:@"true"]) {
+        if([shouldAllow rangeOfString:@"true"].location != NSNotFound) {
             
             NSString *currentBranch = [[NSUserDefaults standardUserDefaults] valueForKey:@"rootURL"];
             
@@ -544,7 +544,7 @@
     }
     
     // Did the user request index.html? In which case, redirect them to use the OTA updated one instead of the bundled one
-    if([request.URL.absoluteString containsString:self.startPage]) {
+    if([request.URL.absoluteString rangeOfString:@"index.html"].location != NSNotFound) {
         [self performSelector:@selector(reloadWebView) withObject:nil afterDelay:0.1];
         return NO;
     }
@@ -568,7 +568,7 @@
     trueScreenSize.width *= [UIScreen mainScreen].scale;
     
     for (NSString *imgName in allPngImageNames){
-        if ([imgName containsString:@"LaunchImage"]){
+        if ([imgName rangeOfString:@"LaunchImage"].location != NSNotFound){
             UIImage *img = [UIImage imageNamed:imgName];
             
             CGSize trueImageSize = img.size;
