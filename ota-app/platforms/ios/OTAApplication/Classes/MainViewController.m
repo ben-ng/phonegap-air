@@ -279,7 +279,7 @@
     CGSize viewSize = [UIScreen mainScreen].bounds.size;
     
     // Replace timestamp so we force new js to load
-    indexHTMLData = [indexHTMLData stringByReplacingOccurrencesOfString:@"{{ts}}" withString:[NSNumber numberWithDouble:[NSDate timeIntervalSinceReferenceDate]].stringValue];
+    indexHTMLData = [indexHTMLData stringByReplacingOccurrencesOfString:@"{{ts}}" withString:[NSNumber numberWithDouble:[NSDate timeIntervalSinceReferenceDate] + NSTimeIntervalSince1970].stringValue];
     if(_launchImagePath) {
         indexHTMLData = [indexHTMLData stringByReplacingOccurrencesOfString:@"{{launchImagePath}}" withString:_launchImagePath];
     }
