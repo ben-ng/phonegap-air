@@ -602,11 +602,6 @@ const char *APP_UPDATE_XATTR_CHECKSUM_KEY = "com.OTAUpdatedApplication.Checksum"
                               0,
                               0);
     
-    if(result < 0) {
-        // Can safely ignore in the simulator. xattrs don't work there!
-        NSLog(@"Warning: xattr set failed with errno: %d", errno);
-    }
-    
     return result < 0 ? NO : YES;
 }
 
@@ -626,8 +621,6 @@ const char *APP_UPDATE_XATTR_CHECKSUM_KEY = "com.OTAUpdatedApplication.Checksum"
         return returnVal;
     }
     else {
-        // Can safely ignore in the simulator. xattrs don't work there!
-        NSLog(@"Warning: xattr get failed for %@ with errno: %d", url.lastPathComponent, errno);
         return nil;
     }
 }
