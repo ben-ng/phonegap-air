@@ -12,14 +12,23 @@ var fs = require('fs')
 
 /**
 * These helper functions are direct ports of their objective-c counterparts
+* http://stackoverflow.com/a/1144788
 */
+function escapeRegExp(string) {
+    return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(string, find, replace) {
+  return string.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
 function fixPrefix(input, prefix) {
   var needle = '/' + prefix + '/'
     , replacement = prefix + '/'
 
-  input.replace('\'' + needle, '\'' + replacement)
-  input.replace('\"' + needle, '\"' + replacement)
-  input.replace('(' + needle, '(' + replacement)
+  input = replaceAll(input, '\'' + needle, '\'' + replacement)
+  input = replaceAll(input, '\"' + needle, '\"' + replacement)
+  input = replaceAll(input, '(' + needle, '(' + replacement)
 
   return input
 }
@@ -73,6 +82,7 @@ async.auto({
     request({
       url: url.resolve(results.constants.prodURL, results.constants.manifestPath)
     , json: true
+    , gzip: true
     }, function (err, resp, body) {
       if(!err && resp.statusCode !== 200) {
         err = new Error('Expected 200, got ' + resp.statusCode)
@@ -89,14 +99,14 @@ async.auto({
     }
 
     for(var i=0, ii=results.manifest.assets.length; i<ii; ++i) {
-      var url = results.manifest.assets[i]
-        , cacheURL = url.replace(/^.*:\/\//, '')
+      var assetUrl = results.manifest.assets[i]
+        , cacheURL = assetUrl.replace(/^.*:\/\//, '')
         , cacheKey = crypto.createHash('md5')
                             .update(cacheURL, 'utf8')
                             .digest('hex').toUpperCase()
 
       tasks.push({
-        source: url
+        source: assetUrl
       , destination: path.join(cacheDirectory, cacheKey + '.persist')
       , checksum: null // Skip the check
       , isAsset: true
@@ -107,6 +117,7 @@ async.auto({
       request({
         url: file.isAsset ? file.source : url.resolve(results.constants.prodURL, file.source)
       , encoding: null // Force data to be a buffer, otherwise checksums won't match up
+      , gzip: true
       }, function (err, resp, data) {
         if(!err && resp.statusCode !== 200) {
           err = new Error('Expected 200, got ' + resp.statusCode)
