@@ -10,6 +10,9 @@
 #import "NSData+MD5.h"
 #import "NSFileManager+DoNotBackup.h"
 #import <CommonCrypto/CommonDigest.h>
+#include <sys/xattr.h>
+
+const char *APP_UPDATE_XATTR_CHECKSUM_KEY = "com.OTAUpdatedApplication.Checksum";
 
 @interface AppUpdate()
 {
@@ -126,6 +129,9 @@
     NSURLSession *session = [NSURLSession sharedSession];
     
     NSURL *rootURL = [NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKeyPath:@"rootURL"]];
+    
+    NSLog(@"rootURL: %@", rootURL);
+    
     NSURLSessionTask *versionTask = [session dataTaskWithURL:[NSURL URLWithString:ManifestPath relativeToURL:rootURL]
                                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                
@@ -173,12 +179,13 @@
             NSString *rootURLString = [defaults objectForKey:@"rootURL"];
             NSURL *rootURL = [NSURL URLWithString:rootURLString];
             NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
-            _session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:[NSOperationQueue mainQueue]];
             
             // Cancel if this takes too long, we get penalized for taking too long!
             // If this is someone's dev machine then give up to 2 mins since we're in dev mode anyway
             unsigned long long delay = [rootURLString hasSuffix:@"8080"] ? 120 * NSEC_PER_SEC : 25 * NSEC_PER_SEC; // The entire operation times out in 25s
             sessionConfig.timeoutIntervalForRequest = [rootURLString hasSuffix:@"8080"] ? 120 : 15; // Individual requests time out in 15s if no data is transferred
+            
+            _session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:[NSOperationQueue mainQueue]];
             
             // Oh don't you just love objective-c?
             _proxiedCompletionHandler = ^void (NSError *error) {
@@ -210,11 +217,35 @@
                 [files enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSDictionary *value, BOOL *stop) {
                     // Don't bother downloading files that didn't change
                     NSURL *destination = [_OTAUpdatedWWWURL URLByAppendingPathComponent:value[@"destination"]];
-                    NSError *error = nil;
-                    NSData *dat = [NSData dataWithContentsOfURL:destination options:0 error:&error];
+                    BOOL hashMismatch = YES;
                     
-                    // Download if the file is missing, or if the checksum has changed
-                    if(error != nil || ![[dat MD5] isEqualToString:value[@"checksum"]]) {
+                    // Try and read the extended file attribute with the old hash
+                    NSString *xAttrChecksum = [self readChecksumXAttrForURL: destination];
+                    
+                    // If there was a hash there, see if it matches (fast!)
+                    if([xAttrChecksum isEqual:value[@"checksum"]]) {
+                        hashMismatch = NO;
+                    }
+                    
+                    // If that didn't work, fall back to hashing the data (slow, sucks)
+                    if(hashMismatch) {
+                        NSError *error = nil;
+                        NSData *dat = [NSData dataWithContentsOfURL:destination options:0 error:&error];
+                        
+                        if(error == nil) {
+                            NSString *hash = [dat MD5];
+                            
+                            if([hash isEqualToString:value[@"checksum"]]) {
+                                hashMismatch = NO;
+                                
+                                // Speed up future runs by setting the xattr
+                                [self setChecksumXAttr:hash forURL:destination];
+                            }
+                        }
+                    }
+                    
+                    // By this point, we know if we have to download again or not.
+                    if(hashMismatch) {
                         NSURL *resource = [NSURL URLWithString:value[@"source"] relativeToURL:rootURL];
                         NSURLSessionDownloadTask *task = [_session downloadTaskWithURL:resource];
                         task.taskDescription = [NSString stringWithFormat:@"%@: %@", key, value[@"source"]];
@@ -349,8 +380,8 @@
     if(isCorrupted) {
         [self reset];
         _proxiedCompletionHandler([NSError errorWithDomain:@"OTAApplication" code:500 userInfo:@{
-                                                                                          NSLocalizedDescriptionKey: @"Download corrupted"
-                                                                                          }]);
+                                                                                                 NSLocalizedDescriptionKey: @"Download corrupted"
+                                                                                                 }]);
         return;
     }
     
@@ -411,12 +442,16 @@
             [fm moveItemAtURL:obj[@"tempLocation"] toURL:obj[@"destination"] error:&error];
         }
         
-        [fm addSkipBackupAttributeToItemAtURL:obj[@"destination"]];
-        
         if(error) {
             *stop = YES;
             lastError = [NSError errorWithDomain:@"OTAApplication" code:500 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Error swapping file %@: %@", obj[@"destination"], error.localizedDescription]}];
             return;
+        }
+        else {
+            // File is written at this point. Now skip iCloud backups.
+            [fm addSkipBackupAttributeToItemAtURL:obj[@"destination"]];
+            
+            [self setChecksumXAttr:obj[@"checksum"] forURL: obj[@"destination"]];
         }
     }];
     
@@ -552,6 +587,49 @@
 {
     // Don't copy cache primer stuff to the documents directory! That shit gets backed up and is the wrong place anyway!
     return ![srcPath hasSuffix:@".persist"];
+}
+
+#pragma mark XAttrHelpers
+
+-(BOOL)setChecksumXAttr:(NSString *)checksum forURL:(NSURL *)url
+{
+    // Also, add the original hash as an xattr
+    const char *checksumString = [checksum cStringUsingEncoding:NSUTF8StringEncoding];
+    ssize_t result = setxattr([((NSURL *) url) fileSystemRepresentation],
+                              APP_UPDATE_XATTR_CHECKSUM_KEY,
+                              checksumString,
+                              sizeof(char) * strlen(checksumString),
+                              0,
+                              0);
+    
+    if(result < 0) {
+        // Can safely ignore in the simulator. xattrs don't work there!
+        NSLog(@"Warning: xattr set failed with errno: %d", errno);
+    }
+    
+    return result < 0 ? NO : YES;
+}
+
+-(NSString *)readChecksumXAttrForURL:(NSURL *) url
+{
+    char *existingHash = malloc(sizeof(char) * 33); // You need one more byte for the null byte at the end of the C string
+    memset(existingHash, 0, sizeof(char) * 33);
+    ssize_t resultLen = getxattr([url fileSystemRepresentation], APP_UPDATE_XATTR_CHECKSUM_KEY, existingHash, sizeof(char) * 32, 0, 0);
+    
+    if(resultLen > -1) {
+        char *nullptr = existingHash + sizeof(char) * 32;
+        nullptr = '\0';
+        
+        NSString *returnVal = [NSString stringWithCString:existingHash encoding:NSUTF8StringEncoding];
+        free(existingHash);
+        
+        return returnVal;
+    }
+    else {
+        // Can safely ignore in the simulator. xattrs don't work there!
+        NSLog(@"Warning: xattr get failed for %@ with errno: %d", url.lastPathComponent, errno);
+        return nil;
+    }
 }
 
 @end

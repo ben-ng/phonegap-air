@@ -10,6 +10,8 @@
 #import "Constants.h"
 #import "PersistentURLCache.h"
 
+FOUNDATION_EXPORT const char * APP_UPDATE_XATTR_CHECKSUM_KEY;
+
 @interface AppUpdate : NSObject <NSURLSessionDelegate, NSURLSessionDownloadDelegate, NSFileManagerDelegate>
 
 - (id) initWithOTAUpdatedWWWURL: (NSURL *) OTAUpdatedWWWURL
@@ -28,5 +30,8 @@
 - (void) restoreFromBundleResourcesWithCompletionHandler: (void (^)(NSError *error))completionHandler;
 
 - (void) cancel;
+
+- (NSString *) readChecksumXAttrForURL: (NSURL *) url;
+- (BOOL) setChecksumXAttr: (NSString *) checksum forURL: (NSURL *) url;
 
 @end
