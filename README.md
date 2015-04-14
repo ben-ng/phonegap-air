@@ -33,10 +33,6 @@ This system has been in the iOS app store for a year with zero crash reports, su
 * Download only the smallest changeset needed to update a client
 * Switch between prod/staging/dev versions of your app by shaking your device
 * Make your app feel faster with cleverly used launch images
-
-**Advanced Features**
-
-* Load images from the web instantly by proxying them to a local cache
 * Deep link into your application (`myapp://do-something`)
 
 ## Demo
@@ -171,13 +167,13 @@ Let me know what's confusing and I'll add to it.
 
 ### Enhancements
 
-I'm a full-time student with a near full-time job, so these will be a very low priority for me. If you need something badly @mention me on [twitter](https://twitter.com/_benng) or email me at `me [at] benng.me` and we'll work something out.
+I'm a full-time student with a full-time job, so these will be a very low priority for me. If you need something badly @mention me on [twitter](https://twitter.com/_benng) or email me at `me [at] benng.me` and we'll work something out.
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Ben Ng
+Copyright (c) 2015 Ben Ng
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
