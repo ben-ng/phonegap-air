@@ -41,6 +41,20 @@ This system has been in the iOS app store for a year with zero crash reports, su
 
 Included is a working Xcode project and sample node.js server.
 
+### On The Command Line
+
+```sh
+npm install -g phonegap
+cd phonegap-air
+npm install
+cd ota-app
+phonegap build ios
+```
+
+You can also run the demo with `phonegap run ios`.
+
+### Through Xcode
+
 1. Open the Xcode project
 2. Run it in the iOS simulator (pick any device)
 3. Observe that a blocking update is performed using the production manifest
