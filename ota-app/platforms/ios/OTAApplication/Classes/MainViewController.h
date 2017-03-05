@@ -30,6 +30,7 @@
 #import <Cordova/CDVViewController.h>
 #import <Cordova/CDVCommandDelegateImpl.h>
 #import <Cordova/CDVCommandQueue.h>
+#import <WebKit/Webkit.h>
 
 @interface MainViewController : CDVViewController <WKNavigationDelegate>
 

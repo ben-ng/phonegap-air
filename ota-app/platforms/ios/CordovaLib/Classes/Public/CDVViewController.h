@@ -26,6 +26,7 @@
 #import "CDVScreenOrientationDelegate.h"
 #import "CDVPlugin.h"
 #import "CDVWebViewEngineProtocol.h"
+#import <WebKit/WebKit.h>
 
 @interface CDVViewController : UIViewController <CDVScreenOrientationDelegate>{
     @protected
@@ -37,7 +38,8 @@
     NSString* _userAgent;
 }
 
-@property (nonatomic, readonly, weak) IBOutlet UIView* webView;
+//@property (nonatomic, readonly, weak) IBOutlet UIView* webView;
+@property (nonatomic, readonly, strong) WKWebView* webView;
 
 @property (nonatomic, readonly, strong) NSMutableDictionary* pluginObjects;
 @property (nonatomic, readonly, strong) NSDictionary* pluginsMap;
@@ -62,6 +64,12 @@
  base.
  */
 @property (nonatomic, readwrite, copy) NSString* baseUserAgent;
+
+/**
+	Takes/Gives an array of UIInterfaceOrientation (int) objects
+	ex. UIInterfaceOrientationPortrait
+*/
+@property (nonatomic, readwrite, strong) NSArray* supportedOrientations;
 
 /**
  The address of the lock token used for controlling access to setting the user-agent

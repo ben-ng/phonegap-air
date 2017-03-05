@@ -2,9 +2,25 @@
     "cordova-plugin-wkwebview-engine": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-wkwebview-engine"
+            "id": "cordova-plugin-wkwebview-engine@~1.1.1"
         },
         "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-file": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-file"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-compat": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-compat"
+        },
+        "is_top_level": false,
         "variables": {}
     }
 }
