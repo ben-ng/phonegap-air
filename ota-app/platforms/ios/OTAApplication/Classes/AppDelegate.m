@@ -211,10 +211,10 @@
      * This is Cordova's built-in, unreliable way of doing deep linking. Unreliable because it assumes
      * the app is ready to handle the link, or that the webview is even loaded. Don't do this.
      * Left here as a cautionary tale.
-   
-    NSString* jsString = [NSString stringWithFormat:@"handleOpenURL(\"%@\");", url];
-    [self.viewController.webView stringByEvaluatingJavaScriptFromString:jsString];
-    
+     
+     NSString* jsString = [NSString stringWithFormat:@"handleOpenURL(\"%@\");", url];
+     [self.viewController.webView stringByEvaluatingJavaScriptFromString:jsString];
+     
      */
     
     // all plugins will get the notification, and their handlers will be called
@@ -250,7 +250,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:CDVRemoteNotificationError object:error];
 }
 
-- (NSUInteger)application:(UIApplication*)application supportedInterfaceOrientationsForWindow:(UIWindow*)window
+- (UIInterfaceOrientationMask)application:(UIApplication*)application supportedInterfaceOrientationsForWindow:(UIWindow*)window
 {
     // iPhone doesn't support upside down by default, while the iPad does.  Override to allow all orientations always, and let the root view controller decide what's allowed (the supported orientations mask gets intersected).
     NSUInteger supportedInterfaceOrientations = (1 << UIInterfaceOrientationPortrait) | (1 << UIInterfaceOrientationLandscapeLeft) | (1 << UIInterfaceOrientationLandscapeRight) | (1 << UIInterfaceOrientationPortraitUpsideDown);

@@ -19,7 +19,7 @@
 
 //
 //  MainViewController.h
-//  HelloWorld
+//  OTAApplication
 //
 //  Created by ___FULLUSERNAME___ on ___DATE___.
 //  Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
@@ -30,8 +30,10 @@
 #import <Cordova/CDVViewController.h>
 #import <Cordova/CDVCommandDelegateImpl.h>
 #import <Cordova/CDVCommandQueue.h>
+#import <WebKit/Webkit.h>
 
-@interface MainViewController : CDVViewController<UIAlertViewDelegate>
+@interface MainViewController : CDVViewController <WKNavigationDelegate>
+
 
 - (id) initWithOTAUpdatedWWWURL: (NSURL *) OTAUpdatedWWWURL
                       appUpdate: (AppUpdate *) appUpdate

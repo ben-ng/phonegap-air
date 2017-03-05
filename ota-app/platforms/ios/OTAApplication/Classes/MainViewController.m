@@ -19,23 +19,16 @@
 
 //
 //  MainViewController.h
-//  HelloWorld
+//  OTAApplication
 //
 //  Created by ___FULLUSERNAME___ on ___DATE___.
 //  Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
 //
 
 #import "MainViewController.h"
-
-@interface MainViewController() {
-}
-
-- (void) enterUpdateModeWithLabelText: (NSString *) labelText;
-- (void) exitUpdateMode;
-- (void) reloadWebView;
-- (void) findLaunchImage;
-
-@end
+#import "WKWebView+WKWebView_Javascript.h"
+#import <WebKit/WKNavigationDelegate.h>
+#import <Cordova/CDVUserAgentUtil.h>
 
 @implementation MainViewController {
     // This bool is true when an update was downloaded in the background, but hasn't been applied yet
@@ -73,6 +66,7 @@
     // This boolean is true when the update library is working in a background thread
     BOOL _isUpdating;
 }
+
 
 - (id)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil
 {
@@ -140,7 +134,11 @@
 
 #pragma mark View lifecycle
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated
+{
+    // View defaults to full size.  If you want to customize the view's size, or its subviews (e.g. webView),
+    // you can do so here.
+
     [super viewWillAppear:animated];
     [self findLaunchImage];
     [self willEnterForeground];
@@ -238,18 +236,27 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return [super shouldAutorotateToInterfaceOrientation:interfaceOrientation];
-}
-
 /* Comment out the block below to over-ride */
 
 /*
 - (UIWebView*) newCordovaViewWithFrame:(CGRect)bounds
 {
     return[super newCordovaViewWithFrame:bounds];
+}
+
+- (NSUInteger)supportedInterfaceOrientations 
+{
+    return [super supportedInterfaceOrientations];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    return [super shouldAutorotateToInterfaceOrientation:interfaceOrientation];
+}
+
+- (BOOL)shouldAutorotate 
+{
+    return [super shouldAutorotate];
 }
 */
 
@@ -260,7 +267,8 @@
     NSString *fragment = nil;
     // Does this request follow our scheme?
     if(_URLScheme != nil && [[url scheme] isEqualToString:_URLScheme]) {
-        fragment = [[url.absoluteString substringFromIndex:_URLScheme.length + @"://".length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSCharacterSet *set = [NSCharacterSet URLFragmentAllowedCharacterSet];
+        fragment = [[url.absoluteString substringFromIndex:_URLScheme.length + @"://".length] stringByAddingPercentEncodingWithAllowedCharacters:set];
     }
     
     _pendingFragment = fragment;
@@ -288,7 +296,7 @@
     
     // If you don't do this, baseURL won't work ):
     NSString *tempString = [_OTAUpdatedWWWURL.path stringByReplacingOccurrencesOfString:@"/" withString:@"//"];
-    tempString = [tempString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    tempString = [tempString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
     NSURL *bastardizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"file:/%@//", tempString]];
     
     if(_pendingFragment) {
@@ -312,9 +320,10 @@
 -(void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
     if(!_isUpdating && motion == UIEventSubtypeMotionShake && !self.webView.isLoading) {
+        
         NSString *shouldAllow = [self.webView stringByEvaluatingJavaScriptFromString:@"window.shouldAllowOTADevTools()"];
         
-        if([shouldAllow rangeOfString:@"true"].location != NSNotFound) {
+        if(([shouldAllow rangeOfString:@"true"].location != NSNotFound) || ([shouldAllow isEqualToString: @"1"])) {
             
             NSString *currentBranch = [[NSUserDefaults standardUserDefaults] valueForKey:@"rootURL"];
             
@@ -357,7 +366,6 @@
 
 - (void)enterUpdateModeWithLabelText:(NSString *)labelText
 {
-    
     [self.webView setHidden:YES];
     self.spinnerLabel.text = labelText;
     self.spinnerLabel.hidden = NO;
@@ -435,122 +443,15 @@
                 NSString *currentBranch = [[NSUserDefaults standardUserDefaults] valueForKey:@"rootURL"];
                 
                 // If a custom URL pull fails, reset to the StagingURL, which is a known good configuration
-                if(![currentBranch isEqualToString:ProductionURL]) {
-                    [[[UIAlertView alloc] initWithTitle:@"Error"
-                                                message:[NSString stringWithFormat:@"It looks like your custom URL was unreachable.\nIs your dev server running?\nError: %@", error.localizedDescription]
-                                               delegate:nil
-                                      cancelButtonTitle:@"Done"
-                                      otherButtonTitles:nil] show];
+                if(![currentBranch isEqualToString:@"Production"]) {
+                    [self showErrorAlert: [NSString stringWithFormat:@"It looks like your custom URL was unreachable.\nIs your dev server running?\nError: %@", error.localizedDescription]];
                 }
                 else {
-                    [[[UIAlertView alloc] initWithTitle:@"Error"
-                                                message:error.localizedDescription
-                                               delegate:nil
-                                      cancelButtonTitle:@"Done"
-                                      otherButtonTitles:nil] show];
+                    [self showErrorAlert: error.localizedDescription];
                 }
             }
         });
     }];
-}
-
-#pragma mark UIWebDelegate implementation
-
-- (void)webViewDidFinishLoad:(UIWebView*)theWebView
-{
-    // Stop annoying bouncing and scrollbars
-    theWebView.backgroundColor = [UIColor whiteColor];
-    theWebView.scrollView.bounces = false;
-    theWebView.scrollView.showsHorizontalScrollIndicator = NO;
-    theWebView.scrollView.showsVerticalScrollIndicator = NO;
-    
-    if(_onLoadFragment) {
-        NSString *_tempFragment = _onLoadFragment;
-        _onLoadFragment = nil;
-        
-        NSString *replacedString = [_tempFragment stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        
-        if(replacedString != nil) {
-            replacedString = [replacedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            NSString *locationSwitcher = [NSString stringWithFormat:@"(function deepLink () {\
-                                          function tryLinking () {\
-                                          if(typeof window.handleDeepLinkedFragment == 'function') {window.handleDeepLinkedFragment('%@')}\
-                                          else {setTimeout(tryLinking, 300)}\
-                                          }\
-                                          tryLinking()\
-                                          })()", replacedString];
-            NSLog(@"Deep linking to %@", replacedString);
-            [theWebView stringByEvaluatingJavaScriptFromString:locationSwitcher];
-        }
-        else {
-            NSLog(@"Invalid deep link fragment: %@", _tempFragment);
-        }
-    }
-    
-    if(_pendingFragment) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self reloadWebView];
-        });
-    }
-
-    return [super webViewDidFinishLoad:theWebView];
-}
-
-/* Comment out the block below to over-ride
-
-- (void) webViewDidStartLoad:(UIWebView*)theWebView
-{
-    return [super webViewDidStartLoad:theWebView];
- }
- */
-
-- (void) webView:(UIWebView*)theWebView didFailLoadWithError:(NSError*)error
-{
-    // Ignore error from webview load cancellation and set the pending URL again so the next load uses it
-    if(error.code == -999) {
-        if(_onLoadFragment) {
-            _pendingFragment = _onLoadFragment;
-            _onLoadFragment = nil;
-        }
-    }
-    /**
-     * If the webview 404'ed, that usually means that someone left an absolute
-     * link lying around or is using pushState. In either case, just reload the webview,
-     * because its usually the result of a log-out action, in which case we guessed
-     * the expected behavior. If it isn't, we restart instead of having the app go
-     * into an undefined state, which should clue the dev into fixing the root problem.
-     */
-    else if(error.code == -1100 || error.code == 102) {
-        [self reloadWebView];
-    }
-    else {
-        [super webView:theWebView didFailLoadWithError:error];
-    }
-}
-
-- (BOOL) webView:(UIWebView*)theWebView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
-{
-    BOOL shouldLoad = [super webView:theWebView shouldStartLoadWithRequest:request navigationType:navigationType];
-    
-    if(!shouldLoad) {
-        return NO;
-    }
-    
-    if(_pendingFragment != nil) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self reloadWebView];
-        });
-        return NO;
-    }
-    
-    // Did the user request index.html? In which case, redirect them to use the OTA updated one instead of the bundled one
-    if([request.URL.absoluteString rangeOfString:@"index.html"].location != NSNotFound) {
-        [self performSelector:@selector(reloadWebView) withObject:nil afterDelay:0.1];
-        return NO;
-    }
-    else {
-        return YES;
-    }
 }
 
 #pragma mark Helper Functions
@@ -583,6 +484,164 @@
             }
         }
     }
+}
+
+- (void)showErrorAlert: (NSString *)messageString
+{
+    
+    UIAlertController * alert = [UIAlertController
+                                 alertControllerWithTitle:@"Error"
+                                 message:messageString
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    //Add Buttons
+    
+    UIAlertAction* noButton = [UIAlertAction
+                               actionWithTitle:@"Cancel"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   //Handle no, thanks button
+                               }];
+    
+    //Add your buttons to alert controller
+    
+    [alert addAction:noButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark WKNavigationDelegate implementation
+
+-(void)webView:(WKWebView *)theWebView didFinishNavigation:(WKNavigation *)navigation
+{
+    CDVViewController* vc = (CDVViewController*)self;
+    [CDVUserAgentUtil releaseLock:vc.userAgentLockToken];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPageDidLoadNotification object:self.webView]];
+
+    // Stop annoying bouncing and scrollbars
+    theWebView.backgroundColor = [UIColor whiteColor];
+    theWebView.scrollView.bounces = false;
+    theWebView.scrollView.showsHorizontalScrollIndicator = NO;
+    theWebView.scrollView.showsVerticalScrollIndicator = NO;
+    
+    if(_onLoadFragment) {
+        NSString *_tempFragment = _onLoadFragment;
+        _onLoadFragment = nil;
+        
+        NSCharacterSet *set = [NSCharacterSet URLHostAllowedCharacterSet];
+        
+        NSString *replacedString = [_tempFragment stringByAddingPercentEncodingWithAllowedCharacters:set];// stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        if(replacedString != nil) {
+            replacedString = [replacedString stringByAddingPercentEncodingWithAllowedCharacters:set];
+            NSString *locationSwitcher = [NSString stringWithFormat:@"(function deepLink () {\
+                                          function tryLinking () {\
+                                          if(typeof window.handleDeepLinkedFragment == 'function') {window.handleDeepLinkedFragment('%@')}\
+                                          else {setTimeout(tryLinking, 300)}\
+                                          }\
+                                          tryLinking()\
+                                          })()", replacedString];
+            NSLog(@"Deep linking to %@", replacedString);
+            [theWebView stringByEvaluatingJavaScriptFromString:locationSwitcher];
+        }
+        else {
+            NSLog(@"Invalid deep link fragment: %@", _tempFragment);
+        }
+    }
+    
+    if(_pendingFragment) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self reloadWebView];
+        });
+    }
+}
+
+//- (void) webView:(UIWebView*)theWebView didFailLoadWithError:(NSError*)error
+-(void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    // Ignore error from webview load cancellation and set the pending URL again so the next load uses it
+    if(error.code == -999) {
+        if(_onLoadFragment) {
+            _pendingFragment = _onLoadFragment;
+            _onLoadFragment = nil;
+        }
+    }
+    /**
+     * If the webview 404'ed, that usually means that someone left an absolute
+     * link lying around or is using pushState. In either case, just reload the webview,
+     * because its usually the result of a log-out action, in which case we guessed
+     * the expected behavior. If it isn't, we restart instead of having the app go
+     * into an undefined state, which should clue the dev into fixing the root problem.
+     */
+    else if(error.code == -1100 || error.code == 102) {
+        [self reloadWebView];
+    }
+    else {
+        // CDVWKWebViewEngine may have the super of this
+        // [super webView:theWebView didFailLoadWithError:error];
+    }
+}
+
+//- (BOOL) webView:(UIWebView*)theWebView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy)) decisionHandler {
+    
+    // BOOL shouldLoad = [ webView:theWebView shouldStartLoadWithRequest:request navigationType:navigationType];
+
+    //        if(!shouldLoad) {
+//            decisionHandler(WKNavigationResponsePolicyCancel)
+//        }
+
+        
+    if (_pendingFragment != nil) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self reloadWebView];
+        });
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
+    
+    NSURLRequest *request = navigationAction.request;
+    
+    // Did the user request index.html? In which case, redirect them to use the OTA updated one instead of the bundled one
+    if([request.URL.absoluteString rangeOfString:@"index.html"].location != NSNotFound) {
+        [self performSelector:@selector(reloadWebView) withObject:nil afterDelay:0.1];
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
+    else {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
+}
+
+@end
+
+@implementation MainCommandDelegate
+
+/* To override the methods, uncomment the line in the init function(s)
+   in MainViewController.m
+ */
+
+#pragma mark CDVCommandDelegate implementation
+
+- (id)getCommandInstance:(NSString*)className
+{
+    return [super getCommandInstance:className];
+}
+
+- (NSString*)pathForResource:(NSString*)resourcepath
+{
+    return [super pathForResource:resourcepath];
+}
+
+@end
+
+@implementation MainCommandQueue
+
+/* To override, uncomment the line in the init function(s)
+   in MainViewController.m
+ */
+- (BOOL)execute:(CDVInvokedUrlCommand*)command
+{
+    return [super execute:command];
 }
 
 @end

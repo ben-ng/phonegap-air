@@ -6,6 +6,17 @@
     "config_munge": {
         "files": {}
     },
-    "installed_plugins": {},
-    "dependent_plugins": {}
+    "installed_plugins": {
+        "cordova-plugin-wkwebview-engine": {
+            "PACKAGE_NAME": "com.foo.bar"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.foo.bar"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.foo.bar"
+        }
+    }
 }
