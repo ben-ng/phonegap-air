@@ -28,6 +28,7 @@
 #import "MainViewController.h"
 #import "WKWebView+WKWebView_Javascript.h"
 #import <WebKit/WKNavigationDelegate.h>
+#import <Cordova/CDVUserAgentUtil.h>
 
 @implementation MainViewController {
     // This bool is true when an update was downloaded in the background, but hasn't been applied yet
@@ -509,10 +510,15 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark UIWebDelegate implementation
+#pragma mark WKNavigationDelegate implementation
 
 -(void)webView:(WKWebView *)theWebView didFinishNavigation:(WKNavigation *)navigation
 {
+    CDVViewController* vc = (CDVViewController*)self;
+    [CDVUserAgentUtil releaseLock:vc.userAgentLockToken];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPageDidLoadNotification object:self.webView]];
+
     // Stop annoying bouncing and scrollbars
     theWebView.backgroundColor = [UIColor whiteColor];
     theWebView.scrollView.bounces = false;
@@ -549,8 +555,6 @@
             [self reloadWebView];
         });
     }
-    
-    // CDVWKWebViewEngine may have the super of this
 }
 
 //- (void) webView:(UIWebView*)theWebView didFailLoadWithError:(NSError*)error
