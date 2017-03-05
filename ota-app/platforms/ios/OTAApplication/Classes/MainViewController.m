@@ -266,7 +266,8 @@
     NSString *fragment = nil;
     // Does this request follow our scheme?
     if(_URLScheme != nil && [[url scheme] isEqualToString:_URLScheme]) {
-        fragment = [[url.absoluteString substringFromIndex:_URLScheme.length + @"://".length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSCharacterSet *set = [NSCharacterSet URLFragmentAllowedCharacterSet];
+        fragment = [[url.absoluteString substringFromIndex:_URLScheme.length + @"://".length] stringByAddingPercentEncodingWithAllowedCharacters:set];
     }
     
     _pendingFragment = fragment;
@@ -294,7 +295,7 @@
     
     // If you don't do this, baseURL won't work ):
     NSString *tempString = [_OTAUpdatedWWWURL.path stringByReplacingOccurrencesOfString:@"/" withString:@"//"];
-    tempString = [tempString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    tempString = [tempString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
     NSURL *bastardizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"file:/%@//", tempString]];
     
     if(_pendingFragment) {
@@ -441,19 +442,11 @@
                 NSString *currentBranch = [[NSUserDefaults standardUserDefaults] valueForKey:@"rootURL"];
                 
                 // If a custom URL pull fails, reset to the StagingURL, which is a known good configuration
-                if(![currentBranch isEqualToString:ProductionURL]) {
-                    [[[UIAlertView alloc] initWithTitle:@"Error"
-                                                message:[NSString stringWithFormat:@"It looks like your custom URL was unreachable.\nIs your dev server running?\nError: %@", error.localizedDescription]
-                                               delegate:nil
-                                      cancelButtonTitle:@"Done"
-                                      otherButtonTitles:nil] show];
+                if(![currentBranch isEqualToString:@"Production"]) {
+                    [self showErrorAlert: [NSString stringWithFormat:@"It looks like your custom URL was unreachable.\nIs your dev server running?\nError: %@", error.localizedDescription]];
                 }
                 else {
-                    [[[UIAlertView alloc] initWithTitle:@"Error"
-                                                message:error.localizedDescription
-                                               delegate:nil
-                                      cancelButtonTitle:@"Done"
-                                      otherButtonTitles:nil] show];
+                    [self showErrorAlert: error.localizedDescription];
                 }
             }
         });
@@ -490,6 +483,30 @@
             }
         }
     }
+}
+
+- (void)showErrorAlert: (NSString *)messageString
+{
+    
+    UIAlertController * alert = [UIAlertController
+                                 alertControllerWithTitle:@"Error"
+                                 message:messageString
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    //Add Buttons
+    
+    UIAlertAction* noButton = [UIAlertAction
+                               actionWithTitle:@"Cancel"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   //Handle no, thanks button
+                               }];
+    
+    //Add your buttons to alert controller
+    
+    [alert addAction:noButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark UIWebDelegate implementation
