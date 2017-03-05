@@ -211,10 +211,10 @@
      * This is Cordova's built-in, unreliable way of doing deep linking. Unreliable because it assumes
      * the app is ready to handle the link, or that the webview is even loaded. Don't do this.
      * Left here as a cautionary tale.
-   
-    NSString* jsString = [NSString stringWithFormat:@"handleOpenURL(\"%@\");", url];
-    [self.viewController.webView stringByEvaluatingJavaScriptFromString:jsString];
-    
+     
+     NSString* jsString = [NSString stringWithFormat:@"handleOpenURL(\"%@\");", url];
+     [self.viewController.webView stringByEvaluatingJavaScriptFromString:jsString];
+     
      */
     
     // all plugins will get the notification, and their handlers will be called

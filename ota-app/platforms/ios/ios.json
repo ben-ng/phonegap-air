@@ -1,0 +1,43 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {
+            "config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"CDVWKWebViewEngine\"><param name=\"ios-package\" value=\"CDVWKWebViewEngine\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"CordovaWebViewEngine\" value=\"CDVWKWebViewEngine\" />",
+                            "count": 1
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "installed_plugins": {
+        "cordova-plugin-wkwebview-engine": {
+            "PACKAGE_NAME": "com.foo.bar"
+        }
+    },
+    "dependent_plugins": {},
+    "modules": [
+        {
+            "id": "cordova-plugin-wkwebview-engine.ios-wkwebview-exec",
+            "file": "plugins/cordova-plugin-wkwebview-engine/src/www/ios/ios-wkwebview-exec.js",
+            "pluginId": "cordova-plugin-wkwebview-engine",
+            "clobbers": [
+                "cordova.exec"
+            ]
+        }
+    ],
+    "plugin_metadata": {
+        "cordova-plugin-wkwebview-engine": "1.1.1"
+    }
+}

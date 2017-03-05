@@ -6,6 +6,10 @@
     "config_munge": {
         "files": {}
     },
-    "installed_plugins": {},
+    "installed_plugins": {
+        "cordova-plugin-wkwebview-engine": {
+            "PACKAGE_NAME": "com.foo.bar"
+        }
+    },
     "dependent_plugins": {}
 }

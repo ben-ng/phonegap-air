@@ -19,21 +19,21 @@
 
 //
 //  AppDelegate.h
-//  HelloWorld
+//  OTAApplication
 //
 //  Created by ___FULLUSERNAME___ on ___DATE___.
 //  Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
 //
 
+#import <Cordova/CDVViewController.h>
+#import <Cordova/CDVAppDelegate.h>
 #import <UIKit/UIKit.h>
 #import "Constants.h"
 #import "AppUpdate.h"
 #import "PersistentURLCache.h"
 #import "MainViewController.h"
 
-@interface AppDelegate : NSObject <UIApplicationDelegate>
-{
-}
+@interface AppDelegate : CDVAppDelegate {}
 
 // invoke string is passed to your app on launch, this is only valid if you
 // edit HelloWorld-Info.plist to add a protocol
